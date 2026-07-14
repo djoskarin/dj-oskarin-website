@@ -2,9 +2,7 @@
 
 import crypto from "node:crypto";
 
-const SUPABASE_URL = String(process.env.SUPABASE_URL || "")
-  .trim()
-  .replace(/\/+$/, "");
+const SUPABASE_URL = "https://hfrxaouxamhkqaflvrpr.supabase.co";
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 const ADMIN_PIN = process.env.ADMIN_PIN;
 
@@ -49,7 +47,6 @@ function isAuthorized(request) {
 function supabaseHeaders(extraHeaders = {}) {
   return {
     apikey: SUPABASE_SECRET_KEY,
-    Authorization: `Bearer ${SUPABASE_SECRET_KEY}`,
     "Content-Type": "application/json",
     ...extraHeaders,
   };
