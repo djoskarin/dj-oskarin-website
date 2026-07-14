@@ -440,9 +440,12 @@ function showCollectionEvents(collection) {
               </div>
 
               <div class="event-admin-actions">
-                <button type="button">
-                  Editar
-                </button>
+                <button
+  type="button"
+  data-edit-event="${escapeHtml(event.id)}"
+>
+  Editar
+</button>
 
                 <button
                   class="danger-action"
@@ -506,6 +509,19 @@ function showCollectionEvents(collection) {
     ?.addEventListener("click", () => {
       showEventForm(collection);
     });
+editorContent
+  .querySelectorAll("[data-edit-event]")
+  .forEach((button) => {
+    button.addEventListener("click", () => {
+      const eventToEdit = events.find(
+        (event) => event.id === button.dataset.editEvent
+      );
+
+      if (!eventToEdit) return;
+
+      showEventForm(collection, eventToEdit);
+    });
+  });
 
   editorContent
     .querySelectorAll("[data-delete-event]")
@@ -526,7 +542,9 @@ function showCollectionEvents(collection) {
     });
 }
 
-function showEventForm(collection) {
+function showEventForm(collection, eventToEdit = null) {
+   const editing = Boolean(eventToEdit);
+
   editorContent.innerHTML = `
     <button class="editor-back-link" id="backToCollectionEvents" type="button">
       ← Volver a ${escapeHtml(collection.name)}
@@ -534,24 +552,34 @@ function showEventForm(collection) {
 
     <form class="collection-form" id="eventForm">
       <div class="collection-form-heading">
-        <p class="eyebrow">Nuevo evento</p>
-        <h3>Agregar evento</h3>
+       <p class="eyebrow">
+  ${editing ? "Editar evento" : "Nuevo evento"}
+</p>
+
+<h3>
+  ${editing ? escapeHtml(eventToEdit.title) : "Agregar evento"}
+</h3>
       </div>
 
       <label class="admin-field">
         <span>Nombre del evento</span>
         <input
-          id="eventTitle"
-          type="text"
-          maxlength="90"
-          placeholder="Cailey & Oscar XV"
-          required
-        />
+  id="eventTitle"
+  type="text"
+  maxlength="90"
+  value="${editing ? escapeHtml(eventToEdit.title || "") : ""}"
+  placeholder="Cailey & Oscar XV"
+  required
+/>
       </label>
 
       <label class="admin-field">
         <span>Fecha</span>
-        <input id="eventDate" type="date" />
+       <input
+  id="eventDate"
+  type="date"
+  value="${editing ? escapeHtml(eventToEdit.event_date || "") : ""}"
+/>
       </label>
 
       <label class="admin-field">
@@ -560,6 +588,7 @@ function showEventForm(collection) {
           id="eventVenue"
           type="text"
           maxlength="100"
+          value="${editing ? escapeHtml(eventToEdit.venue || "") : ""}"
           placeholder="Imperial Grand Venue"
         />
       </label>
@@ -570,6 +599,7 @@ function showEventForm(collection) {
           id="eventCity"
           type="text"
           maxlength="100"
+          value="${editing ? escapeHtml(eventToEdit.venue || "") : ""}"
           placeholder="McAllen, Texas"
         />
       </label>
@@ -577,10 +607,10 @@ function showEventForm(collection) {
       <label class="admin-field">
         <span>Historia del evento</span>
         <textarea
-          id="eventStory"
-          maxlength="600"
-          placeholder="Describe la energía, el concepto y los mejores momentos de este evento."
-        ></textarea>
+  id="eventStory"
+  maxlength="600"
+  placeholder="Describe la energía, el concepto y los mejores momentos de este evento."
+>${editing ? escapeHtml(eventToEdit.story || "") : ""}</textarea>
       </label>
 
       <div class="event-media-placeholder">
@@ -606,8 +636,8 @@ function showEventForm(collection) {
       <p class="collection-form-error" id="eventFormError"></p>
 
       <button class="editor-action" type="submit">
-        Guardar evento
-      </button>
+  ${editing ? "Guardar cambios" : "Guardar evento"}
+</button>
     </form>
   `;
 
@@ -650,29 +680,52 @@ function showEventForm(collection) {
 
     const events = readLocalEvents();
 
-    const collectionEvents = events.filter(
-      (item) => item.collection_id === collection.id
-    );
+if (editing) {
+  const eventIndex = events.findIndex(
+    (item) => item.id === eventToEdit.id
+  );
 
-    const newEvent = {
-      id: createLocalId(),
-      collection_id: collection.id,
-      created_at: new Date().toISOString(),
-      title,
-      event_date: eventDate || null,
-      venue: venue || null,
-      city: city || null,
-      story: story || null,
-      cover_image: null,
-      gallery: [],
-      videos: [],
-      display_order: collectionEvents.length,
-    };
+  if (eventIndex === -1) {
+    document.getElementById("eventFormError").textContent =
+      "No se encontró el evento.";
+    return;
+  }
 
-    events.push(newEvent);
-    saveLocalEvents(events);
+  events[eventIndex] = {
+    ...events[eventIndex],
+    title,
+    event_date: eventDate || null,
+    venue: venue || null,
+    city: city || null,
+    story: story || null,
+  };
 
-    showToast("✓ Evento guardado");
+  saveLocalEvents(events);
+  showToast("✓ Cambios guardados");
+} else {
+  const collectionEvents = events.filter(
+    (item) => item.collection_id === collection.id
+  );
+
+  const newEvent = {
+    id: createLocalId(),
+    collection_id: collection.id,
+    created_at: new Date().toISOString(),
+    title,
+    event_date: eventDate || null,
+    venue: venue || null,
+    city: city || null,
+    story: story || null,
+    cover_image: null,
+    gallery: [],
+    videos: [],
+    display_order: collectionEvents.length,
+  };
+
+  events.push(newEvent);
+  saveLocalEvents(events);
+  showToast("✓ Evento guardado");
+}
 
     showCollectionEvents(collection);
   });
