@@ -65,6 +65,7 @@ function closeEditor() {
 }
 
 const COLLECTIONS_STORAGE_KEY = "djOskarinCollections";
+const EVENTS_STORAGE_KEY = "djOskarinEvents";
 
 function createLocalSlug(value) {
   return String(value || "")
@@ -98,6 +99,30 @@ function saveLocalCollections(collections) {
   localStorage.setItem(
     COLLECTIONS_STORAGE_KEY,
     JSON.stringify(collections)
+  );
+}
+function readLocalEvents() {
+  try {
+    const savedEvents = JSON.parse(
+      localStorage.getItem(EVENTS_STORAGE_KEY) || "[]"
+    );
+
+    return Array.isArray(savedEvents)
+      ? savedEvents.sort(
+          (a, b) =>
+            Number(a.display_order || 0) -
+            Number(b.display_order || 0)
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalEvents(events) {
+  localStorage.setItem(
+    EVENTS_STORAGE_KEY,
+    JSON.stringify(events)
   );
 }
 
@@ -423,6 +448,7 @@ function showCollectionEvents(collection) {
     showEventForm(collection);
   });
 }
+
 function showEventForm(collection) {
   editorContent.innerHTML = `
     <button class="editor-back-link" id="backToCollectionEvents" type="button">
@@ -515,15 +541,65 @@ function showEventForm(collection) {
     });
 
   document
-    .getElementById("eventForm")
-    ?.addEventListener("submit", (event) => {
-      event.preventDefault();
+  .getElementById("eventForm")
+  ?.addEventListener("submit", (event) => {
+    event.preventDefault();
 
-      showToast("✓ Formulario listo");
+    const title = document
+      .getElementById("eventTitle")
+      .value.trim();
 
-      showCollectionEvents(collection);
-    });
-}
+    const eventDate = document
+      .getElementById("eventDate")
+      .value;
+
+    const venue = document
+      .getElementById("eventVenue")
+      .value.trim();
+
+    const city = document
+      .getElementById("eventCity")
+      .value.trim();
+
+    const story = document
+      .getElementById("eventStory")
+      .value.trim();
+
+    if (!title) {
+      document.getElementById("eventFormError").textContent =
+        "Write the event name.";
+      return;
+    }
+
+    const events = readLocalEvents();
+
+    const collectionEvents = events.filter(
+      (item) => item.collection_id === collection.id
+    );
+
+    const newEvent = {
+      id: createLocalId(),
+      collection_id: collection.id,
+      created_at: new Date().toISOString(),
+      title,
+      event_date: eventDate || null,
+      venue: venue || null,
+      city: city || null,
+      story: story || null,
+      cover_image: null,
+      gallery: [],
+      videos: [],
+      display_order: collectionEvents.length,
+    };
+
+    events.push(newEvent);
+    saveLocalEvents(events);
+
+    showToast("✓ Evento guardado");
+
+    showCollectionEvents(collection);
+  });
+  }
 
 function showCollectionForm(collection = null) {
   const editing = Boolean(collection);
