@@ -2,7 +2,9 @@
 
 import crypto from "node:crypto";
 
-const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_URL = String(process.env.SUPABASE_URL || "")
+  .trim()
+  .replace(/\/+$/, "");
 const SUPABASE_SECRET_KEY = process.env.SUPABASE_SECRET_KEY;
 const ADMIN_PIN = process.env.ADMIN_PIN;
 
@@ -82,9 +84,7 @@ export default async function handler(request, response) {
     if (request.method === "GET") {
       const result = await fetch(
         `${SUPABASE_URL}/rest/v1/collections` +
-          `?select=*` +
-          `&order=display_order.asc` +
-          `&order=created_at.asc`,
+  `?select=*&order=display_order.asc,created_at.asc`,
         {
           headers: supabaseHeaders(),
         }
