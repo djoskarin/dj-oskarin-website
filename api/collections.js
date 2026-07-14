@@ -115,13 +115,15 @@ export default async function handler(request, response) {
         });
       }
 
-      const currentResult = await fetch(
-        `${SUPABASE_URL}/rest/v1/collections?select=display_order` +
-          `&order=display_order.desc&limit=1`,
-        {
-          headers: supabaseHeaders(),
-        }
-      );
+      const currentUrl = new URL("/rest/v1/collections", SUPABASE_URL);
+
+currentUrl.searchParams.set("select", "display_order");
+currentUrl.searchParams.set("order", "display_order.desc");
+currentUrl.searchParams.set("limit", "1");
+
+const currentResult = await fetch(currentUrl, {
+  headers: supabaseHeaders(),
+});
 
       const currentCollections = await currentResult.json();
       const nextOrder =
