@@ -1,4 +1,4 @@
-export default function handler(request, response) {
+export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({
       success: false,
@@ -6,17 +6,27 @@ export default function handler(request, response) {
     });
   }
 
-  const { pin } = request.body || {};
-  const correctPin = process.env.ADMIN_PIN;
+  let body = request.body;
 
-  if (!correctPin) {
+  if (typeof body === "string") {
+    try {
+      body = JSON.parse(body);
+    } catch {
+      body = {};
+    }
+  }
+
+  const enteredPin = String(body?.pin ?? "").trim();
+  const savedPin = String(process.env.ADMIN_PIN ?? "").trim();
+
+  if (!savedPin) {
     return response.status(500).json({
       success: false,
-      message: "El PIN administrativo todavía no está configurado.",
+      message: "El PIN administrativo no está configurado.",
     });
   }
 
-  if (String(pin) !== String(correctPin)) {
+  if (enteredPin !== savedPin) {
     return response.status(401).json({
       success: false,
       message: "PIN incorrecto.",
