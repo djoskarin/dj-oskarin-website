@@ -635,4 +635,37 @@ a {
   background: rgba(255, 80, 80, 0.08);
   color: #ffb1b1;
   border-color: rgba(255, 130, 130, 0.8);
+}/* Collection events */
+
+.collection-events-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.collection-events-heading h3 {
+  font-family: var(--serif);
+  font-size: clamp(3.3rem, 8vw, 6rem);
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+.collection-events-heading > div > p:last-child {
+  max-width: 520px;
+  margin-top: 18px;
+  color: var(--white-soft);
+  line-height: 1.7;
+}
+
+.collection-events-empty {
+  margin-top: 10px;
+}
+
+@media (max-width: 680px) {
+  .collection-events-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }

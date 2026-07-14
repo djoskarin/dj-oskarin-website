@@ -276,6 +276,13 @@ function renderCollections(collections) {
               </div>
 
               <div class="collection-admin-actions">
+              <button
+  type="button"
+  data-action="open"
+  data-id="${escapeHtml(collection.id)}"
+>
+  Abrir
+</button>
                 <button
                   type="button"
                   data-action="edit"
@@ -352,6 +359,9 @@ function renderCollections(collections) {
 
         if (!collection) return;
 
+if (button.dataset.action === "open") {
+  showCollectionEvents(collection);
+}
         if (button.dataset.action === "edit") {
           showCollectionForm(collection);
         }
@@ -364,6 +374,53 @@ function renderCollections(collections) {
           deleteCollection(collection);
         }
       });
+    });
+}
+function showCollectionEvents(collection) {
+  editorContent.innerHTML = `
+    <button class="editor-back-link" id="backToCollections" type="button">
+      ← Volver a colecciones
+    </button>
+
+    <div class="collection-events-heading">
+      <div>
+        <p class="eyebrow">Colección</p>
+        <h3>${escapeHtml(collection.name)}</h3>
+
+        ${
+          collection.subtitle
+            ? `<p>${escapeHtml(collection.subtitle)}</p>`
+            : ""
+        }
+      </div>
+
+      <button
+        class="editor-action collections-add-button"
+        id="newEventButton"
+        type="button"
+      >
+        Nuevo evento
+      </button>
+    </div>
+
+    <div class="editor-empty collection-events-empty">
+      <h3>Todavía no hay eventos</h3>
+
+      <p>
+        Cuando agregues tu primer evento, aparecerá aquí dentro de
+        ${escapeHtml(collection.name)}.
+      </p>
+    </div>
+  `;
+
+  document
+    .getElementById("backToCollections")
+    ?.addEventListener("click", loadCollections);
+
+  document
+    .getElementById("newEventButton")
+    ?.addEventListener("click", () => {
+      showToast("El formulario de Nuevo Evento viene ahora.");
     });
 }
 
