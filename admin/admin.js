@@ -402,6 +402,70 @@ if (button.dataset.action === "open") {
     });
 }
 function showCollectionEvents(collection) {
+  const events = readLocalEvents()
+    .filter((item) => item.collection_id === collection.id)
+    .sort(
+      (a, b) =>
+        Number(a.display_order || 0) -
+        Number(b.display_order || 0)
+    );
+
+  const eventCards = events.length
+    ? events
+        .map(
+          (event) => `
+            <article class="event-admin-card">
+              <div class="event-admin-number">
+                ${Number(event.display_order ?? 0) + 1}
+              </div>
+
+              <div class="event-admin-info">
+                <p class="event-admin-date">
+                  ${
+                    event.event_date
+                      ? escapeHtml(event.event_date)
+                      : "Sin fecha"
+                  }
+                </p>
+
+                <h3>${escapeHtml(event.title)}</h3>
+
+                <p>
+                  ${escapeHtml(
+                    [event.venue, event.city]
+                      .filter(Boolean)
+                      .join(" · ") || "Sin lugar"
+                  )}
+                </p>
+              </div>
+
+              <div class="event-admin-actions">
+                <button type="button">
+                  Editar
+                </button>
+
+                <button
+                  class="danger-action"
+                  type="button"
+                  data-delete-event="${escapeHtml(event.id)}"
+                >
+                  Eliminar
+                </button>
+              </div>
+            </article>
+          `
+        )
+        .join("")
+    : `
+        <div class="editor-empty collection-events-empty">
+          <h3>Todavía no hay eventos</h3>
+          <p>
+            Cuando agregues tu primer evento, aparecerá aquí dentro de
+            ${escapeHtml(collection.name)}.
+          </p>
+        </div>
+      `;
+
   editorContent.innerHTML = `
     <button class="editor-back-link" id="backToCollections" type="button">
       ← Volver a colecciones
@@ -428,13 +492,8 @@ function showCollectionEvents(collection) {
       </button>
     </div>
 
-    <div class="editor-empty collection-events-empty">
-      <h3>Todavía no hay eventos</h3>
-
-      <p>
-        Cuando agregues tu primer evento, aparecerá aquí dentro de
-        ${escapeHtml(collection.name)}.
-      </p>
+    <div class="events-admin-list">
+      ${eventCards}
     </div>
   `;
 
@@ -443,10 +502,28 @@ function showCollectionEvents(collection) {
     ?.addEventListener("click", loadCollections);
 
   document
-  .getElementById("newEventButton")
-  ?.addEventListener("click", () => {
-    showEventForm(collection);
-  });
+    .getElementById("newEventButton")
+    ?.addEventListener("click", () => {
+      showEventForm(collection);
+    });
+
+  editorContent
+    .querySelectorAll("[data-delete-event]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        const confirmed = window.confirm("¿Eliminar este evento?");
+
+        if (!confirmed) return;
+
+        const updatedEvents = readLocalEvents().filter(
+          (event) => event.id !== button.dataset.deleteEvent
+        );
+
+        saveLocalEvents(updatedEvents);
+        showToast("✓ Evento eliminado");
+        showCollectionEvents(collection);
+      });
+    });
 }
 
 function showEventForm(collection) {
