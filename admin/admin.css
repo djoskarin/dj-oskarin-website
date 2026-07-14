@@ -668,4 +668,35 @@ a {
     align-items: stretch;
     flex-direction: column;
   }
+}/* New event form */
+
+.event-media-placeholder {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 28px 0;
+}
+
+.event-upload-placeholder {
+  width: 100%;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--white);
+  padding: 17px 18px;
+  text-align: left;
+  transition: var(--transition);
+}
+
+.event-upload-placeholder:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.event-media-placeholder > p:last-child {
+  color: var(--white-soft);
+  font-size: 0.76rem;
+  line-height: 1.6;
 }

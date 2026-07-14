@@ -418,9 +418,110 @@ function showCollectionEvents(collection) {
     ?.addEventListener("click", loadCollections);
 
   document
-    .getElementById("newEventButton")
+  .getElementById("newEventButton")
+  ?.addEventListener("click", () => {
+    showEventForm(collection);
+  });
+}
+function showEventForm(collection) {
+  editorContent.innerHTML = `
+    <button class="editor-back-link" id="backToCollectionEvents" type="button">
+      ← Volver a ${escapeHtml(collection.name)}
+    </button>
+
+    <form class="collection-form" id="eventForm">
+      <div class="collection-form-heading">
+        <p class="eyebrow">Nuevo evento</p>
+        <h3>Agregar evento</h3>
+      </div>
+
+      <label class="admin-field">
+        <span>Nombre del evento</span>
+        <input
+          id="eventTitle"
+          type="text"
+          maxlength="90"
+          placeholder="Cailey & Oscar XV"
+          required
+        />
+      </label>
+
+      <label class="admin-field">
+        <span>Fecha</span>
+        <input id="eventDate" type="date" />
+      </label>
+
+      <label class="admin-field">
+        <span>Lugar</span>
+        <input
+          id="eventVenue"
+          type="text"
+          maxlength="100"
+          placeholder="Imperial Grand Venue"
+        />
+      </label>
+
+      <label class="admin-field">
+        <span>Ciudad</span>
+        <input
+          id="eventCity"
+          type="text"
+          maxlength="100"
+          placeholder="McAllen, Texas"
+        />
+      </label>
+
+      <label class="admin-field">
+        <span>Historia del evento</span>
+        <textarea
+          id="eventStory"
+          maxlength="600"
+          placeholder="Describe la energía, el concepto y los mejores momentos de este evento."
+        ></textarea>
+      </label>
+
+      <div class="event-media-placeholder">
+        <p class="eyebrow">Contenido</p>
+
+        <button type="button" class="event-upload-placeholder">
+          Subir foto principal
+        </button>
+
+        <button type="button" class="event-upload-placeholder">
+          Agregar fotos
+        </button>
+
+        <button type="button" class="event-upload-placeholder">
+          Agregar video opcional
+        </button>
+
+        <p>
+          Los botones de fotos y videos se conectarán en el siguiente paso.
+        </p>
+      </div>
+
+      <p class="collection-form-error" id="eventFormError"></p>
+
+      <button class="editor-action" type="submit">
+        Guardar evento
+      </button>
+    </form>
+  `;
+
+  document
+    .getElementById("backToCollectionEvents")
     ?.addEventListener("click", () => {
-      showToast("El formulario de Nuevo Evento viene ahora.");
+      showCollectionEvents(collection);
+    });
+
+  document
+    .getElementById("eventForm")
+    ?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      showToast("✓ Formulario listo");
+
+      showCollectionEvents(collection);
     });
 }
 
