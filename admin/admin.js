@@ -413,10 +413,10 @@ function showCollectionEvents(collection) {
   const eventCards = events.length
     ? events
         .map(
-          (event) => `
+  (event, index) => `
             <article class="event-admin-card">
               <div class="event-admin-number">
-                ${Number(event.display_order ?? 0) + 1}
+               ${index + 1}
               </div>
 
               <div class="event-admin-info">
