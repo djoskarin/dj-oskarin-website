@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <meta
+      name="description"
+      content="Sitio oficial de DJ Oskarin. Eventos, videos, galería, paquetes y línea directa."
+    />
+
+    <meta name="theme-color" content="#050505" />
+
+    <title>DJ Oskarin | Sitio Oficial</title>
+
+    <!-- Favicon: lo agregaremos cuando tengamos tu logo -->
+    <link rel="icon" href="assets/favicon.png" />
+
+    <!-- Tipografías -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+
+    <script src="script.js" defer></script>
+  </head>
+
+  <body>
+    <!-- Pantalla de carga -->
+    <div class="loading-screen" id="loadingScreen" aria-hidden="true">
+      <p class="loading-logo">DJ OSKARIN</p>
+    </div>
+
+    <!-- Encabezado -->
+    <header class="site-header">
+     <button
+  class="brand-button"
+  id="brandTrigger"
+  type="button"
+  aria-label="DJ Oskarin"
+>
+  <img
+    class="brand-logo"
+    src="assets/logo/dj-oskarin-logo.png"
+    alt="DJ Oskarin"
+  />
+</button>
+
+      <button
+        class="menu-button"
+        id="openMenuButton"
+        type="button"
+        aria-label="Abrir menú"
+        aria-expanded="false"
+        aria-controls="fullscreenMenu"
+      >
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+
+    <!-- Menú de pantalla completa -->
+    <div
+      class="fullscreen-menu"
+      id="fullscreenMenu"
+      aria-hidden="true"
+    >
+      <div class="menu-top">
+        <p class="menu-brand">DJ OSKARIN</p>
+
+        <button
+          class="close-menu-button"
+          id="closeMenuButton"
+          type="button"
+          aria-label="Cerrar menú"
+        >
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <nav class="menu-navigation" aria-label="Navegación principal">
+        <a href="#inicio" class="menu-link">Inicio</a>
+        <a href="#eventos" class="menu-link">Eventos destacados</a>
+        <a href="#videos" class="menu-link">Videos</a>
+        <a href="#galeria" class="menu-link">Galería</a>
+        <a href="#paquetes" class="menu-link">Paquetes</a>
+        <a href="#resenas" class="menu-link">Reseñas</a>
+        <a href="#sobre-mi" class="menu-link">Sobre mí</a>
+
+        <button
+          class="menu-direct-line"
+          id="menuDirectLineButton"
+          type="button"
+        >
+          Línea Directa — DJ Oskarin
+        </button>
+      </nav>
+
+      <div class="menu-footer">
+        <p>It’s DJ Oskarin.</p>
+      </div>
+    </div>
+
+    <main>
+      <!-- Inicio -->
+      <section class="hero-section" id="inicio">
+        <div class="hero-media" aria-hidden="true">
+          <!--
+            Más adelante colocarás el video recap dentro de:
+            assets/hero-video.mp4
+          -->
+          <video
+            class="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+          >
+            <source src="assets/hero-video.mp4" type="video/mp4" />
+          </video>
+
+          <div class="hero-overlay"></div>
+          <div class="hero-grain"></div>
+        </div>
+
+        <div class="hero-content">
+          <p class="hero-eyebrow">Sitio oficial</p>
+
+          <h1>DJ OSKARIN</h1>
+
+          <p class="hero-slogan">Creando momentos inolvidables.</p>
+
+          <button
+            class="direct-line-button"
+            id="heroDirectLineButton"
+            type="button"
+          >
+            <span>Línea Directa</span>
+            <small>DJ Oskarin</small>
+          </button>
+        </div>
+
+        <a class="scroll-indicator" href="#explorar" aria-label="Continuar">
+          <span>Explorar</span>
+          <span class="scroll-line"></span>
+        </a>
+      </section>
+
+      <!-- Introducción breve -->
+      <section class="intro-section" id="explorar">
+        <p class="section-label">DJ Oskarin</p>
+
+        <h2>
+          Música, energía y una experiencia diseñada para cada celebración.
+        </h2>
+
+        <button
+          class="text-direct-line-button"
+          id="introDirectLineButton"
+          type="button"
+        >
+          Línea Directa — DJ Oskarin
+          <span aria-hidden="true">↗</span>
+        </button>
+      </section>
+
+      <!-- Marcadores de las futuras páginas/secciones -->
+      <section class="preview-section" id="eventos">
+        <p class="section-label">Eventos destacados</p>
+        <h2>Los momentos que marcaron el camino.</h2>
+        <a href="#" class="preview-link">Explorar eventos</a>
+      </section>
+
+      <section class="preview-section" id="videos">
+        <p class="section-label">Videos</p>
+        <h2>Revive los mejores momentos.</h2>
+        <a href="#" class="preview-link">Ver videos</a>
+      </section>
+
+      <section class="preview-section" id="galeria">
+        <p class="section-label">Galería</p>
+        <h2>Cada imagen cuenta una historia.</h2>
+        <a href="#" class="preview-link">Abrir galería</a>
+      </section>
+
+      <section class="preview-section" id="paquetes">
+        <p class="section-label">Paquetes</p>
+        <h2>Encuentra la experiencia ideal para tu celebración.</h2>
+        <a href="#" class="preview-link">Conocer paquetes</a>
+      </section>
+
+      <section class="preview-section" id="resenas">
+        <p class="section-label">Reseñas</p>
+        <h2>
+          La mejor recomendación viene de quienes ya vivieron la experiencia.
+        </h2>
+        <a href="#" class="preview-link">Leer reseñas</a>
+      </section>
+
+      <section class="preview-section" id="sobre-mi">
+        <p class="section-label">Sobre mí</p>
+
+        <h2>La persona detrás de la música.</h2>
+
+        <p class="about-preview">
+          Hola, soy Oscar, también conocido como DJ Oskarin. A mis 15 años he
+          tenido la oportunidad de presentarme en XV años, bodas, eventos
+          escolares y celebraciones privadas. Cada evento es diferente, y mi
+          objetivo siempre es el mismo: crear un ambiente que las personas
+          recuerden mucho después de que termine la música.
+        </p>
+
+        <a href="#" class="preview-link">Conocer más</a>
+      </section>
+
+      <!-- Cierre principal -->
+      <section class="closing-section">
+        <div class="closing-content">
+          <p class="section-label">Línea Directa</p>
+
+          <h2>
+            Cada evento es una oportunidad para crear algo inolvidable.
+          </h2>
+
+          <p>
+            Gracias por visitar mi página. Será un gusto formar parte de uno de
+            los momentos más importantes de tu vida.
+          </p>
+
+          <button
+            class="closing-direct-line-button"
+            id="closingDirectLineButton"
+            type="button"
+          >
+            Línea Directa — DJ Oskarin
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <!-- Panel Línea Directa -->
+    <div
+      class="contact-modal"
+      id="contactModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="contactModalTitle"
+    >
+      <button
+        class="contact-backdrop"
+        id="contactBackdrop"
+        type="button"
+        aria-label="Cerrar Línea Directa"
+      ></button>
+
+      <div class="contact-panel">
+        <div class="contact-panel-header">
+          <div>
+            <p class="section-label">DJ Oskarin</p>
+            <h2 id="contactModalTitle">Línea Directa</h2>
+          </div>
+
+          <button
+            class="close-contact-button"
+            id="closeContactButton"
+            type="button"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
+
+        <p class="contact-introduction">
+          Elige cómo prefieres comunicarte.
+        </p>
+
+        <div class="contact-options">
+          <a
+            class="contact-option"
+            id="whatsappContact"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>
+              <strong>WhatsApp</strong>
+              <small>La forma más rápida de recibir una respuesta.</small>
+            </span>
+
+            <span aria-hidden="true">↗</span>
+          </a>
+
+          <a class="contact-option" id="phoneContact" href="#">
+            <span>
+              <strong>Llamada telefónica</strong>
+              <small>Hablemos directamente sobre tu evento.</small>
+            </span>
+
+            <span aria-hidden="true">↗</span>
+          </a>
+
+          <a
+            class="contact-option"
+            id="instagramContact"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>
+              <strong>Instagram</strong>
+              <small>Conoce más contenido y envíame un mensaje.</small>
+            </span>
+
+            <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Entrada privada por PIN -->
+    <div
+      class="admin-modal"
+      id="adminModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="adminModalTitle"
+    >
+      <button
+        class="admin-backdrop"
+        id="adminBackdrop"
+        type="button"
+        aria-label="Cerrar acceso privado"
+      ></button>
+
+      <div class="admin-panel">
+        <button
+          class="close-admin-button"
+          id="closeAdminButton"
+          type="button"
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+        <p class="section-label">DJ Oskarin</p>
+
+        <h2 id="adminModalTitle">Acceso privado</h2>
+
+        <p class="admin-description">
+          Ingresa tu PIN para continuar.
+        </p>
+
+        <form class="admin-login-form" id="adminLoginForm">
+          <label for="adminPin">PIN</label>
+
+          <input
+            id="adminPin"
+            name="adminPin"
+            type="password"
+            inputmode="numeric"
+            autocomplete="off"
+            maxlength="8"
+            required
+          />
+
+          <p class="admin-error" id="adminError" aria-live="polite"></p>
+
+          <button type="submit">Entrar</button>
+        </form>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <p>DJ OSKARIN</p>
+      <p>© 2026 DJ Oskarin</p>
+    </footer>
+  </body>
+</html>
