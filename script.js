@@ -309,7 +309,8 @@ adminLoginForm?.addEventListener("submit", async (event) => {
       Después construiremos protección adicional para el dashboard.
     */
 
-    sessionStorage.setItem("djOskarinAdmin", "true");
+   sessionStorage.setItem("djOskarinAdmin", "true");
+sessionStorage.setItem("djOskarinAdminToken", result.token);
 
     submitButton.textContent = "Acceso autorizado";
 

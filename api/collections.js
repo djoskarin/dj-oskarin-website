@@ -27,7 +27,11 @@ function createExpectedAdminToken() {
 function isAuthorized(request) {
   if (!ADMIN_PIN) return false;
 
-  const providedToken = getCookie(request, "dj_oskarin_admin");
+  const authorization = String(request.headers.authorization || "");
+  const providedToken = authorization.startsWith("Bearer ")
+    ? authorization.slice(7)
+    : "";
+
   const expectedToken = createExpectedAdminToken();
 
   if (!providedToken || providedToken.length !== expectedToken.length) {

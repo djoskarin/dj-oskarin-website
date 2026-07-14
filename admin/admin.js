@@ -65,11 +65,13 @@ function closeEditor() {
 }
 
 async function requestCollections(options = {}) {
+  const adminToken = sessionStorage.getItem("djOskarinAdminToken");
+
   const response = await fetch("../api/collections", {
-    credentials: "include",
     ...options,
     headers: {
       "Content-Type": "application/json",
+      Authorization: `Bearer ${adminToken}`,
       ...(options.headers || {}),
     },
   });
@@ -77,7 +79,7 @@ async function requestCollections(options = {}) {
   const result = await response.json().catch(() => null);
 
   if (!response.ok || !result?.success) {
-    throw new Error(result?.message || "No se pudo completar la acción.");
+    throw new Error(result?.message || "Request failed.");
   }
 
   return result;
@@ -436,6 +438,7 @@ editorBackdrop?.addEventListener("click", closeEditor);
 
 logoutButton?.addEventListener("click", () => {
   sessionStorage.removeItem("djOskarinAdmin");
+  sessionStorage.removeItem("djOskarinAdminToken");
   window.location.replace("../index.html");
 });
 

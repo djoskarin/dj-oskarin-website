@@ -1,3 +1,7 @@
+"use strict";
+
+import crypto from "node:crypto";
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({
@@ -33,7 +37,13 @@ export default async function handler(request, response) {
     });
   }
 
+  const adminToken = crypto
+    .createHmac("sha256", savedPin)
+    .update("dj-oskarin-admin")
+    .digest("hex");
+
   return response.status(200).json({
     success: true,
+    token: adminToken,
   });
 }
