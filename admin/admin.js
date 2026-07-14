@@ -65,8 +65,8 @@ function closeEditor() {
 }
 
 async function requestCollections(options = {}) {
-  const response = await fetch("../api/collections", {
-    credentials: "same-origin",
+  const response = await fetch("credentials: "include",/api/collections", {
+    credentials: "include",
     ...options,
     headers: {
       "Content-Type": "application/json",

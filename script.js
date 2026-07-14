@@ -290,12 +290,13 @@ adminLoginForm?.addEventListener("submit", async (event) => {
 
   try {
     const response = await fetch(CONFIG.adminVerificationUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ pin }),
-    });
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({ pin }),
+});
 
     const result = await response.json().catch(() => null);
 
