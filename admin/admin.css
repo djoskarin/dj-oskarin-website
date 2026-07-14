@@ -699,4 +699,40 @@ a {
   color: var(--white-soft);
   font-size: 0.76rem;
   line-height: 1.6;
+}/* Fix event action buttons */
+
+.event-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.event-admin-actions button {
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.72);
+  padding: 10px 13px;
+  font-size: 0.64rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: var(--transition);
+}
+
+.event-admin-actions button:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.event-admin-actions .danger-action {
+  color: rgba(255, 170, 170, 0.85);
+}
+
+.event-admin-actions .danger-action:hover {
+  border-color: rgba(255, 130, 130, 0.8);
+  background: rgba(255, 80, 80, 0.08);
+  color: #ffb1b1;
 }
