@@ -335,9 +335,7 @@ adminLoginForm?.addEventListener("submit", async (event) => {
 
 /* Solo permitir números en el PIN */
 
-adminPin?.addEventListener("input", () => {
-  adminPin.value = adminPin.value.replace(/\D/g, "");
-});
+
 
 /* =========================================================
    TECLA ESCAPE
