@@ -58,6 +58,7 @@ const adminError = document.getElementById("adminError");
 window.addEventListener("load", () => {
   window.setTimeout(() => {
     loadingScreen?.classList.add("is-hidden");
+    document.body.classList.add("page-ready");
   }, 900);
 });
 

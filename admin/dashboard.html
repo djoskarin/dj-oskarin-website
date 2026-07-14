@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+
+    <meta name="theme-color" content="#050505" />
+
+    <title>Admin | DJ Oskarin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="admin.css" />
+    <script src="admin.js" defer></script>
+  </head>
+
+  <body>
+    <div class="admin-loading" id="adminLoading">
+      <p>DJ OSKARIN</p>
+    </div>
+
+    <header class="admin-header">
+      <a class="admin-brand" href="../index.html">
+        DJ OSKARIN
+      </a>
+
+      <div class="admin-header-actions">
+        <a class="view-site-link" href="../index.html">
+          Ver sitio
+        </a>
+
+        <button id="logoutButton" type="button">
+          Cerrar sesión
+        </button>
+      </div>
+    </header>
+
+    <main class="dashboard">
+      <section class="dashboard-intro">
+        <p class="eyebrow">Panel privado</p>
+
+        <h1>
+          Bienvenido de nuevo,
+          <em>Oscar.</em>
+        </h1>
+
+        <p class="dashboard-description">
+          Administra el contenido de tu página oficial.
+        </p>
+      </section>
+
+      <section class="dashboard-grid">
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="eventos"
+        >
+          <span class="card-number">01</span>
+
+          <span class="card-content">
+            <strong>Eventos destacados</strong>
+            <small>
+              Crea eventos y agrega sus fotos, videos y descripción.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="videos"
+        >
+          <span class="card-number">02</span>
+
+          <span class="card-content">
+            <strong>Videos</strong>
+            <small>
+              Agrega videos privados o no listados mediante un enlace.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="galeria"
+        >
+          <span class="card-number">03</span>
+
+          <span class="card-content">
+            <strong>Galería</strong>
+            <small>
+              Agrega fotografías utilizando enlaces de imagen.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="paquetes"
+        >
+          <span class="card-number">04</span>
+
+          <span class="card-content">
+            <strong>Paquetes</strong>
+            <small>
+              Edita Classic y Signature para XV años y bodas.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="resenas"
+        >
+          <span class="card-number">05</span>
+
+          <span class="card-content">
+            <strong>Reseñas</strong>
+            <small>
+              Publica nuevas reseñas y decide cuáles se muestran.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+
+        <button
+          class="dashboard-card"
+          type="button"
+          data-section="configuracion"
+        >
+          <span class="card-number">06</span>
+
+          <span class="card-content">
+            <strong>Configuración</strong>
+            <small>
+              Administra enlaces, número de contacto y redes sociales.
+            </small>
+          </span>
+
+          <span class="card-arrow">↗</span>
+        </button>
+      </section>
+    </main>
+
+    <div
+      class="editor-modal"
+      id="editorModal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="editorTitle"
+    >
+      <button
+        class="editor-backdrop"
+        id="editorBackdrop"
+        type="button"
+        aria-label="Cerrar"
+      ></button>
+
+      <section class="editor-panel">
+        <div class="editor-header">
+          <div>
+            <p class="eyebrow">Administrador</p>
+            <h2 id="editorTitle">Contenido</h2>
+          </div>
+
+          <button
+            class="close-editor"
+            id="closeEditorButton"
+            type="button"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="editor-content" id="editorContent"></div>
+      </section>
+    </div>
+  </body>
+</html>
