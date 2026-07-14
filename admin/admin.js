@@ -64,25 +64,160 @@ function closeEditor() {
   document.body.classList.remove("modal-open");
 }
 
-async function requestCollections(options = {}) {
-  const adminToken = sessionStorage.getItem("djOskarinAdminToken");
+const COLLECTIONS_STORAGE_KEY = "djOskarinCollections";
 
-  const response = await fetch("../api/collections", {
-    ...options,
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${adminToken}`,
-      ...(options.headers || {}),
-    },
-  });
+function createLocalSlug(value) {
+  return String(value || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
 
-  const result = await response.json().catch(() => null);
+function readLocalCollections() {
+  try {
+    const savedCollections = JSON.parse(
+      localStorage.getItem(COLLECTIONS_STORAGE_KEY) || "[]"
+    );
 
-  if (!response.ok || !result?.success) {
-    throw new Error(result?.message || "Request failed.");
+    return Array.isArray(savedCollections)
+      ? savedCollections.sort(
+          (a, b) =>
+            Number(a.display_order || 0) -
+            Number(b.display_order || 0)
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveLocalCollections(collections) {
+  localStorage.setItem(
+    COLLECTIONS_STORAGE_KEY,
+    JSON.stringify(collections)
+  );
+}
+
+function createLocalId() {
+  if (window.crypto?.randomUUID) {
+    return window.crypto.randomUUID();
   }
 
-  return result;
+  return `collection-${Date.now()}-${Math.random()
+    .toString(16)
+    .slice(2)}`;
+}
+
+async function requestCollections(options = {}) {
+  const method = String(options.method || "GET").toUpperCase();
+
+  let body = {};
+
+  if (options.body) {
+    try {
+      body = JSON.parse(options.body);
+    } catch {
+      body = {};
+    }
+  }
+
+  let collections = readLocalCollections();
+
+  if (method === "GET") {
+    return {
+      success: true,
+      collections,
+    };
+  }
+
+  if (method === "POST") {
+    const name = String(body.name || "").trim();
+    const subtitle = String(body.subtitle || "").trim();
+
+    if (!name) {
+      throw new Error("Write the collection name.");
+    }
+
+    const collection = {
+      id: createLocalId(),
+      created_at: new Date().toISOString(),
+      name,
+      slug: createLocalSlug(name),
+      subtitle: subtitle || null,
+      cover_image: null,
+      is_visible: true,
+      display_order: collections.length,
+    };
+
+    collections.push(collection);
+    saveLocalCollections(collections);
+
+    return {
+      success: true,
+      collection,
+    };
+  }
+
+  if (method === "PATCH") {
+    const collectionIndex = collections.findIndex(
+      (collection) => collection.id === body.id
+    );
+
+    if (collectionIndex === -1) {
+      throw new Error("Collection not found.");
+    }
+
+    const currentCollection = collections[collectionIndex];
+
+    const updatedCollection = {
+      ...currentCollection,
+      ...(typeof body.name === "string"
+        ? {
+            name: body.name.trim(),
+            slug: createLocalSlug(body.name),
+          }
+        : {}),
+      ...(typeof body.subtitle === "string"
+        ? { subtitle: body.subtitle.trim() || null }
+        : {}),
+      ...(typeof body.is_visible === "boolean"
+        ? { is_visible: body.is_visible }
+        : {}),
+      ...(Number.isInteger(body.display_order)
+        ? { display_order: body.display_order }
+        : {}),
+    };
+
+    collections[collectionIndex] = updatedCollection;
+    saveLocalCollections(collections);
+
+    return {
+      success: true,
+      collection: updatedCollection,
+    };
+  }
+
+  if (method === "DELETE") {
+    collections = collections.filter(
+      (collection) => collection.id !== body.id
+    );
+
+    collections = collections.map((collection, index) => ({
+      ...collection,
+      display_order: index,
+    }));
+
+    saveLocalCollections(collections);
+
+    return {
+      success: true,
+    };
+  }
+
+  throw new Error("Unsupported action.");
 }
 
 async function loadCollections() {
