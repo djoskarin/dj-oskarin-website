@@ -1,38 +1,54 @@
 import { db } from "./firebase.js";
-import { openCloudinaryUpload } from "./cloudinary.js";
+
+import {
+  collection,
+  getDocs,
+  orderBy,
+  query,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 "use strict";
 
-const EVENTS_STORAGE_KEY = "djOskarinEvents";
-
-const mainGalleryGrid = document.getElementById("mainGalleryGrid");
+const mainGalleryGrid = document.getElementById(
+  "mainGalleryGrid"
+);
 
 const gallerySearchToggle = document.getElementById(
   "gallerySearchToggle"
 );
+
 const gallerySearchPanel = document.getElementById(
   "gallerySearchPanel"
 );
+
 const gallerySearchInput = document.getElementById(
   "gallerySearchInput"
 );
+
 const gallerySearchClose = document.getElementById(
   "gallerySearchClose"
 );
 
-const galleryLightbox = document.getElementById("galleryLightbox");
+const galleryLightbox = document.getElementById(
+  "galleryLightbox"
+);
+
 const galleryLightboxImage = document.getElementById(
   "galleryLightboxImage"
 );
+
 const galleryLightboxClose = document.getElementById(
   "galleryLightboxClose"
 );
+
 const galleryLightboxPrev = document.getElementById(
   "galleryLightboxPrev"
 );
+
 const galleryLightboxNext = document.getElementById(
   "galleryLightboxNext"
 );
+
 const galleryLightboxCount = document.getElementById(
   "galleryLightboxCount"
 );
@@ -41,8 +57,8 @@ let allGalleryPhotos = [];
 let visibleGalleryPhotos = [];
 let activePhotoIndex = 0;
 
-function escapeHtml(value) {
-  return String(value ?? "")
+function escapeHtml(value = "") {
+  return String(value)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -50,57 +66,70 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function readEvents() {
+async function loadGalleryPhotos() {
+  if (!mainGalleryGrid) return;
+
+  mainGalleryGrid.innerHTML = `
+    <div class="gallery-empty-state">
+      <p>Cargando fotografías...</p>
+    </div>
+  `;
+
   try {
-    const savedEvents = JSON.parse(
-      localStorage.getItem(EVENTS_STORAGE_KEY) || "[]"
+    const galleryQuery = query(
+      collection(db, "gallery"),
+      orderBy("order", "asc")
     );
 
-    return Array.isArray(savedEvents) ? savedEvents : [];
+    const snapshot = await getDocs(galleryQuery);
+
+    allGalleryPhotos = snapshot.docs
+      .map((photoDocument) => {
+        const photo = photoDocument.data();
+
+        return {
+          id: photoDocument.id,
+          image: photo.url || "",
+          title: photo.title || "",
+          visible: photo.visible !== false,
+          order: Number(photo.order || 0),
+        };
+      })
+      .filter(
+        (photo) =>
+          photo.visible &&
+          Boolean(photo.image)
+      );
+
+    renderGallery();
   } catch (error) {
-    console.error("Could not load gallery events:", error);
-    return [];
+    console.error(
+      "Could not load Firestore gallery:",
+      error
+    );
+
+    mainGalleryGrid.innerHTML = `
+      <div class="gallery-empty-state">
+        <p>No se pudieron cargar las fotografías.</p>
+      </div>
+    `;
   }
 }
 
-function collectGalleryPhotos() {
-  const events = readEvents();
-
-  const photos = [];
-
-  events.forEach((event) => {
-    const gallery = Array.isArray(event.gallery)
-      ? event.gallery
-      : [];
-
-    gallery.forEach((image, index) => {
-      photos.push({
-        id: `${event.id}-${index}`,
-        image,
-        eventId: event.id,
-        eventTitle: event.title || "Evento",
-        displayOrder:
-          Number(event.gallery_order?.[index]) ||
-          Number(event.display_order || 0) * 100 + index,
-      });
-    });
-  });
-
-  return photos.sort(
-    (a, b) => a.displayOrder - b.displayOrder
-  );
-}
-
 function renderGallery(searchTerm = "") {
-  const normalizedSearch = searchTerm.trim().toLowerCase();
+  const normalizedSearch = searchTerm
+    .trim()
+    .toLowerCase();
 
-  visibleGalleryPhotos = allGalleryPhotos.filter((photo) => {
-    if (!normalizedSearch) return true;
+  visibleGalleryPhotos = allGalleryPhotos.filter(
+    (photo) => {
+      if (!normalizedSearch) return true;
 
-    return photo.eventTitle
-      .toLowerCase()
-      .includes(normalizedSearch);
-  });
+      return photo.title
+        .toLowerCase()
+        .includes(normalizedSearch);
+    }
+  );
 
   if (!visibleGalleryPhotos.length) {
     mainGalleryGrid.innerHTML = `
@@ -114,6 +143,7 @@ function renderGallery(searchTerm = "") {
         </p>
       </div>
     `;
+
     return;
   }
 
@@ -128,13 +158,23 @@ function renderGallery(searchTerm = "") {
         >
           <img
             src="${escapeHtml(photo.image)}"
-            alt="${escapeHtml(photo.eventTitle)}"
+            alt="${
+              photo.title
+                ? escapeHtml(photo.title)
+                : `Fotografía ${index + 1} de DJ Oskarin`
+            }"
             loading="lazy"
           />
 
-          <span class="gallery-photo-label">
-            ${escapeHtml(photo.eventTitle)}
-          </span>
+          ${
+            photo.title
+              ? `
+                <span class="gallery-photo-label">
+                  ${escapeHtml(photo.title)}
+                </span>
+              `
+              : ""
+          }
         </button>
       `
     )
@@ -152,12 +192,16 @@ function renderGallery(searchTerm = "") {
 }
 
 function updateLightbox() {
-  const photo = visibleGalleryPhotos[activePhotoIndex];
+  const photo =
+    visibleGalleryPhotos[activePhotoIndex];
 
   if (!photo) return;
 
   galleryLightboxImage.src = photo.image;
-  galleryLightboxImage.alt = photo.eventTitle;
+
+  galleryLightboxImage.alt =
+    photo.title ||
+    `Fotografía ${activePhotoIndex + 1} de DJ Oskarin`;
 
   galleryLightboxCount.textContent =
     `${activePhotoIndex + 1} / ${visibleGalleryPhotos.length}`;
@@ -165,16 +209,25 @@ function updateLightbox() {
 
 function openLightbox(index) {
   activePhotoIndex = index;
+
   updateLightbox();
 
   galleryLightbox.classList.add("is-open");
-  galleryLightbox.setAttribute("aria-hidden", "false");
+  galleryLightbox.setAttribute(
+    "aria-hidden",
+    "false"
+  );
+
   document.body.style.overflow = "hidden";
 }
 
 function closeLightbox() {
   galleryLightbox.classList.remove("is-open");
-  galleryLightbox.setAttribute("aria-hidden", "true");
+  galleryLightbox.setAttribute(
+    "aria-hidden",
+    "true"
+  );
+
   document.body.style.overflow = "";
 }
 
@@ -182,8 +235,11 @@ function showPreviousPhoto() {
   if (!visibleGalleryPhotos.length) return;
 
   activePhotoIndex =
-    (activePhotoIndex - 1 + visibleGalleryPhotos.length) %
-    visibleGalleryPhotos.length;
+    (
+      activePhotoIndex -
+      1 +
+      visibleGalleryPhotos.length
+    ) % visibleGalleryPhotos.length;
 
   updateLightbox();
 }
@@ -198,24 +254,35 @@ function showNextPhoto() {
   updateLightbox();
 }
 
-gallerySearchToggle?.addEventListener("click", () => {
-  gallerySearchPanel.hidden = false;
-  gallerySearchInput?.focus();
-});
-
-gallerySearchClose?.addEventListener("click", () => {
-  gallerySearchPanel.hidden = true;
-
-  if (gallerySearchInput) {
-    gallerySearchInput.value = "";
+gallerySearchToggle?.addEventListener(
+  "click",
+  () => {
+    gallerySearchPanel.hidden = false;
+    gallerySearchInput?.focus();
   }
+);
 
-  renderGallery();
-});
+gallerySearchClose?.addEventListener(
+  "click",
+  () => {
+    gallerySearchPanel.hidden = true;
 
-gallerySearchInput?.addEventListener("input", () => {
-  renderGallery(gallerySearchInput.value);
-});
+    if (gallerySearchInput) {
+      gallerySearchInput.value = "";
+    }
+
+    renderGallery();
+  }
+);
+
+gallerySearchInput?.addEventListener(
+  "input",
+  () => {
+    renderGallery(
+      gallerySearchInput.value
+    );
+  }
+);
 
 galleryLightboxClose?.addEventListener(
   "click",
@@ -232,29 +299,38 @@ galleryLightboxNext?.addEventListener(
   showNextPhoto
 );
 
-galleryLightbox?.addEventListener("click", (event) => {
-  if (event.target === galleryLightbox) {
-    closeLightbox();
+galleryLightbox?.addEventListener(
+  "click",
+  (event) => {
+    if (event.target === galleryLightbox) {
+      closeLightbox();
+    }
   }
-});
+);
 
-document.addEventListener("keydown", (event) => {
-  if (!galleryLightbox?.classList.contains("is-open")) {
-    return;
+document.addEventListener(
+  "keydown",
+  (event) => {
+    if (
+      !galleryLightbox?.classList.contains(
+        "is-open"
+      )
+    ) {
+      return;
+    }
+
+    if (event.key === "Escape") {
+      closeLightbox();
+    }
+
+    if (event.key === "ArrowLeft") {
+      showPreviousPhoto();
+    }
+
+    if (event.key === "ArrowRight") {
+      showNextPhoto();
+    }
   }
+);
 
-  if (event.key === "Escape") {
-    closeLightbox();
-  }
-
-  if (event.key === "ArrowLeft") {
-    showPreviousPhoto();
-  }
-
-  if (event.key === "ArrowRight") {
-    showNextPhoto();
-  }
-});
-
-allGalleryPhotos = collectGalleryPhotos();
-renderGallery();
+loadGalleryPhotos();
