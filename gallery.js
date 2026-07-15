@@ -1,3 +1,6 @@
+import { db } from "./firebase.js";
+import { openCloudinaryUpload } from "./cloudinary.js";
+
 "use strict";
 
 const EVENTS_STORAGE_KEY = "djOskarinEvents";

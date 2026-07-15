@@ -1,3 +1,15 @@
+import { db } from "../firebase.js";
+import { openCloudinaryUpload } from "../cloudinary.js";
+
+import {
+  addDoc,
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  serverTimestamp,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
 "use strict";
 
 const PACKAGES_STORAGE_KEY = "djOskarinPackages";
@@ -1487,6 +1499,117 @@ showToast("Paquete guardado.");
 showPackagesManager();
     });
 }
+async function showGalleryManager() {
+  editorContent.innerHTML = `
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Galería</h3>
+
+          <p class="packages-manager-description">
+            Sube fotografías y decide cuáles aparecen primero.
+          </p>
+        </div>
+
+        <button
+          class="editor-action"
+          id="addGalleryPhotosButton"
+          type="button"
+        >
+          Agregar fotos
+        </button>
+      </div>
+
+      <div class="packages-admin-grid" id="galleryAdminGrid">
+        <div class="editor-empty">
+          <p>Cargando fotografías...</p>
+        </div>
+      </div>
+    </section>
+  `;
+
+  document
+    .getElementById("addGalleryPhotosButton")
+    ?.addEventListener("click", () => {
+      openCloudinaryUpload(async (uploadedImage) => {
+        try {
+          await addDoc(collection(db, "gallery"), {
+            url: uploadedImage.secure_url,
+            publicId: uploadedImage.public_id,
+            order: Date.now(),
+            visible: true,
+            uploadedAt: serverTimestamp(),
+          });
+
+          showToast("Foto agregada.");
+          await showGalleryManager();
+        } catch (error) {
+          console.error("Could not save gallery photo:", error);
+          showToast("No se pudo guardar la foto.");
+        }
+      });
+    });
+
+  const galleryGrid = document.getElementById("galleryAdminGrid");
+
+  try {
+    const galleryQuery = query(
+      collection(db, "gallery"),
+      orderBy("order", "asc")
+    );
+
+    const snapshot = await getDocs(galleryQuery);
+
+    if (snapshot.empty) {
+      galleryGrid.innerHTML = `
+        <div class="editor-empty">
+          <h3>Todavía no hay fotografías</h3>
+          <p>Presiona Agregar fotos para subir las primeras.</p>
+        </div>
+      `;
+
+      return;
+    }
+
+    galleryGrid.innerHTML = snapshot.docs
+      .map((photoDoc, index) => {
+        const photo = photoDoc.data();
+
+        return `
+          <article class="packages-admin-card">
+            <p class="eyebrow">
+              Fotografía ${String(index + 1).padStart(2, "0")}
+            </p>
+
+            <img
+              src="${escapeHtml(photo.url)}"
+              alt="Fotografía de galería"
+              style="
+                width: 100%;
+                aspect-ratio: 4 / 3;
+                object-fit: cover;
+                margin-bottom: 20px;
+              "
+            />
+
+            <p>
+              Orden: ${Number(photo.order) || index + 1}
+            </p>
+          </article>
+        `;
+      })
+      .join("");
+  } catch (error) {
+    console.error("Could not load gallery:", error);
+
+    galleryGrid.innerHTML = `
+      <div class="editor-empty">
+        <p>No se pudieron cargar las fotografías.</p>
+      </div>
+    `;
+  }
+}
 
 function showPackagesManager() {
   const packages = getSavedPackages();
@@ -1634,6 +1757,13 @@ if (sectionName === "paquetes") {
   editorTitle.textContent = "Paquetes";
   openEditor();
   showPackagesManager();
+  return;
+}
+
+if (sectionName === "galeria") {
+  editorTitle.textContent = "Galería";
+  openEditor();
+  showGalleryManager();
   return;
 }
 
