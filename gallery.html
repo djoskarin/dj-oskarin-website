@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+
+    <meta name="theme-color" content="#080808" />
+
+    <title>Galería — DJ Oskarin</title>
+
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="gallery.css" />
+  </head>
+
+  <body class="gallery-page">
+    <header class="gallery-header">
+      <a class="gallery-logo" href="index.html">
+        DJ OSKARIN
+      </a>
+
+      <nav class="gallery-nav" aria-label="Navegación de galería">
+        <a href="index.html">Inicio</a>
+        <a href="#galleryPhotos">Galería</a>
+        <a href="tel:+19564352725">Línea Directa</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="gallery-hero">
+        <p class="gallery-eyebrow">Galería</p>
+
+        <h1>
+          Cada imagen cuenta<br />
+          una historia.
+        </h1>
+
+        <p class="gallery-intro">
+          Una colección de momentos, celebraciones y recuerdos capturados
+          a través de cada evento.
+        </p>
+
+        <a class="gallery-explore-link" href="#galleryPhotos">
+          Explorar galería
+          <span aria-hidden="true">↘</span>
+        </a>
+      </section>
+
+      <section class="gallery-section" id="galleryPhotos">
+        <div class="gallery-section-heading">
+          <div>
+            <p class="gallery-eyebrow">Fotografías</p>
+            <h2>Momentos inolvidables.</h2>
+          </div>
+
+          <button
+            class="gallery-search-toggle"
+            id="gallerySearchToggle"
+            type="button"
+            aria-label="Buscar fotografías"
+          >
+            ⌕
+          </button>
+        </div>
+
+        <div
+          class="gallery-search-panel"
+          id="gallerySearchPanel"
+          hidden
+        >
+          <input
+            id="gallerySearchInput"
+            type="search"
+            placeholder="Buscar por evento..."
+            autocomplete="off"
+          />
+
+          <button
+            id="gallerySearchClose"
+            type="button"
+            aria-label="Cerrar búsqueda"
+          >
+            ×
+          </button>
+        </div>
+
+        <div class="main-gallery-grid" id="mainGalleryGrid">
+          <div class="gallery-empty-state">
+            <p>Todavía no hay fotografías publicadas.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="gallery-footer">
+      <p>DJ Oskarin</p>
+
+      <a href="tel:+19564352725">
+        Línea Directa
+      </a>
+    </footer>
+
+    <div
+      class="gallery-lightbox"
+      id="galleryLightbox"
+      aria-hidden="true"
+    >
+      <button
+        class="gallery-lightbox-close"
+        id="galleryLightboxClose"
+        type="button"
+        aria-label="Cerrar fotografía"
+      >
+        ×
+      </button>
+
+      <button
+        class="gallery-lightbox-arrow gallery-lightbox-prev"
+        id="galleryLightboxPrev"
+        type="button"
+        aria-label="Fotografía anterior"
+      >
+        ←
+      </button>
+
+      <img
+        id="galleryLightboxImage"
+        src=""
+        alt=""
+      />
+
+      <button
+        class="gallery-lightbox-arrow gallery-lightbox-next"
+        id="galleryLightboxNext"
+        type="button"
+        aria-label="Fotografía siguiente"
+      >
+        →
+      </button>
+
+      <p
+        class="gallery-lightbox-count"
+        id="galleryLightboxCount"
+      ></p>
+    </div>
+
+    <script src="gallery.js"></script>
+  </body>
+</html>
