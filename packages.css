@@ -337,4 +337,33 @@ body.packages-page {
     align-items: flex-start;
     flex-direction: column;
   }
+}.packages-category {
+  padding: 110px 7vw 60px;
+  border-top: 1px solid rgba(255,255,255,.08);
+}
+
+.packages-category h2{
+  margin:12px 0 0;
+  font-family: Georgia,"Times New Roman",serif;
+  font-size:clamp(4rem,7vw,6rem);
+  font-weight:400;
+  line-height:.9;
+}#xv-packages {
+  scroll-margin-top: 76px;
+}
+
+@media (max-width: 860px) {
+  .packages-list {
+    grid-template-columns: 1fr;
+  }
+
+  .package-card,
+  .custom-package {
+    width: 100%;
+  }
+
+  .package-card h2,
+  .custom-package h2 {
+    overflow-wrap: anywhere;
+  }
 }
