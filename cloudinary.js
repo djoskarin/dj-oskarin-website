@@ -1,4 +1,4 @@
-export const CLOUDINARY_CLOUD_NAME = "xl0azzka";
+export const CLOUDINARY_CLOUD_NAME = "xl0azxka";
 export const CLOUDINARY_UPLOAD_PRESET = "dj_oskarin_gallery";
 
 export function openCloudinaryUpload(callback) {
@@ -26,7 +26,11 @@ export function openCloudinaryUpload(callback) {
     },
 
     (error, result) => {
-      if (error) return;
+      if (error) {
+  console.error("Cloudinary upload error:", error);
+  alert(error.message || "Cloudinary upload failed.");
+  return;
+}
 
       if (
         result &&
