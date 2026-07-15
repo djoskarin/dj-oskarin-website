@@ -95,12 +95,21 @@ function readLocalCollections() {
   }
 }
 
-function saveLocalCollections(collections) {
-  localStorage.setItem(
-    COLLECTIONS_STORAGE_KEY,
-    JSON.stringify(collections)
-  );
+function saveLocalEvents(events) {
+  try {
+    localStorage.setItem(
+      EVENTS_STORAGE_KEY,
+      JSON.stringify(events)
+    );
+  } catch (error) {
+    console.error("Event storage failed:", error);
+
+    throw new Error(
+      "Las fotos superan el almacenamiento temporal. Prueba con menos fotos."
+    );
+  }
 }
+
 function readLocalEvents() {
   try {
     const savedEvents = JSON.parse(
@@ -117,6 +126,45 @@ function readLocalEvents() {
   } catch {
     return [];
   }
+}
+function compressImageFile(file, maxSize = 1400, quality = 0.72) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.addEventListener("error", reject);
+
+    reader.addEventListener("load", () => {
+      const image = new Image();
+
+      image.addEventListener("error", reject);
+
+      image.addEventListener("load", () => {
+        let width = image.width;
+        let height = image.height;
+
+        if (width > height && width > maxSize) {
+          height = Math.round((height * maxSize) / width);
+          width = maxSize;
+        } else if (height > maxSize) {
+          width = Math.round((width * maxSize) / height);
+          height = maxSize;
+        }
+
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+
+        const context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, width, height);
+
+        resolve(canvas.toDataURL("image/jpeg", quality));
+      });
+
+      image.src = reader.result;
+    });
+
+    reader.readAsDataURL(file);
+  });
 }
 
 function saveLocalEvents(events) {
@@ -898,16 +946,17 @@ document
 
     if (!files.length) return;
 
-    files.forEach((file) => {
-      const reader = new FileReader();
+    files.forEach(async (file) => {
+  try {
+    const compressedImage = await compressImageFile(file);
 
-      reader.addEventListener("load", () => {
-        selectedGalleryImages.push(reader.result);
-        renderGalleryPreview();
-      });
-
-      reader.readAsDataURL(file);
-    });
+    selectedGalleryImages.push(compressedImage);
+    renderGalleryPreview();
+  } catch (error) {
+    console.error("Photo compression failed:", error);
+    showToast("No se pudo procesar una foto.");
+  }
+});
 
     event.target.value = "";
   });
