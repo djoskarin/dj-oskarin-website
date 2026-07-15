@@ -861,9 +861,26 @@ function showEventForm(collection, eventToEdit = null) {
   }
 </div>
 
-        <button type="button" class="event-upload-placeholder">
-          Agregar video opcional
-        </button>
+        <div class="event-videos-editor">
+  <div class="event-videos-heading">
+    <div>
+      <p class="eyebrow">Videos opcionales</p>
+      <p class="event-videos-help">
+        Agrega un recap o momentos cortos del evento.
+      </p>
+    </div>
+
+    <button
+      class="event-upload-placeholder"
+      id="addEventVideoButton"
+      type="button"
+    >
+      Agregar video
+    </button>
+  </div>
+
+  <div id="eventVideosList"></div>
+</div>
 
         <p>
           Los botones de fotos y videos se conectarán en el siguiente paso.
@@ -887,6 +904,7 @@ let selectedCoverImage =
   editing && eventToEdit.cover_image
     ? eventToEdit.cover_image
     : null;
+
     let selectedGalleryImages =
   editing && Array.isArray(eventToEdit.gallery)
     ? [...eventToEdit.gallery]
