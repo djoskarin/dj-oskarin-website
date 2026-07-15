@@ -1489,12 +1489,15 @@ showPackagesManager();
 }
 
 function showPackagesManager() {
+  const packages = getSavedPackages();
+
   editorContent.innerHTML = `
     <section class="packages-manager">
       <div class="packages-manager-header">
         <div>
           <p class="eyebrow">Administración</p>
           <h3>Paquetes</h3>
+
           <p class="packages-manager-description">
             Administra tus categorías y paquetes desde aquí.
           </p>
@@ -1512,63 +1515,67 @@ function showPackagesManager() {
       <section class="packages-admin-category">
         <div class="packages-admin-category-header">
           <div>
-            <p class="eyebrow">Categoría</p>
-            <h4>XV's</h4>
+            <p class="eyebrow">Paquetes guardados</p>
           </div>
         </div>
 
         <div class="packages-admin-grid">
-          <article class="packages-admin-card">
-            <p class="eyebrow">Paquete 01</p>
-            <h5>Esencial</h5>
+          ${
+            packages.length
+              ? packages
+                  .map(
+                    (packageItem, index) => `
+                      <article class="packages-admin-card">
+                        <p class="eyebrow">
+                          ${escapeHtml(packageItem.category)}
+                          · Paquete ${String(index + 1).padStart(2, "0")}
+                        </p>
 
-            <p>
-              9 elementos incluidos.
-            </p>
+                        <h5>${escapeHtml(packageItem.name)}</h5>
 
-            <button
-              class="collection-button"
-              type="button"
-              data-package-name="Esencial"
-            >
-              Editar
-            </button>
-          </article>
+                        <p>
+                          ${
+                            Array.isArray(packageItem.features)
+                              ? packageItem.features.length
+                              : 0
+                          }
+                          elementos incluidos.
+                        </p>
 
-          <article class="packages-admin-card">
-            <p class="eyebrow">Paquete 02</p>
-            <h5>Signature</h5>
-
-            <p>
-              6 elementos incluidos.
-            </p>
-
-            <button
-              class="collection-button"
-              type="button"
-              data-package-name="Signature"
-            >
-              Editar
-            </button>
-          </article>
+                        <button
+                          class="collection-button"
+                          type="button"
+                          data-package-id="${escapeHtml(packageItem.id)}"
+                        >
+                          Editar
+                        </button>
+                      </article>
+                    `
+                  )
+                  .join("")
+              : `
+                <div class="editor-empty">
+                  <h3>Todavía no hay paquetes</h3>
+                  <p>Presiona Agregar paquete para crear el primero.</p>
+                </div>
+              `
+          }
         </div>
       </section>
     </section>
   `;
 
   document
-  .getElementById("addPackageButton")
-  ?.addEventListener("click", () => {
-    showNewPackageForm();
-  });
+    .getElementById("addPackageButton")
+    ?.addEventListener("click", () => {
+      showNewPackageForm();
+    });
 
   editorContent
-    .querySelectorAll("[data-package-name]")
+    .querySelectorAll("[data-package-id]")
     .forEach((button) => {
       button.addEventListener("click", () => {
-        showToast(
-          `La edición de ${button.dataset.packageName} viene ahora.`
-        );
+        showToast("La edición del paquete viene ahora.");
       });
     });
 }
