@@ -904,4 +904,55 @@ a {
   cursor: pointer;
 
   font-size: 18px;
+}/* =========================
+   ADMIN PACKAGE MANAGER
+========================= */
+
+.packages-admin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.packages-admin-card {
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.packages-admin-card h5 {
+  margin: 12px 0 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+}
+
+.packages-admin-card > p:not(.eyebrow) {
+  margin: 0 0 24px;
+  color: rgba(255, 255, 255, 0.56);
+}
+
+.packages-admin-card .collection-button {
+  min-width: 120px;
+  min-height: 48px;
+  padding: 0 20px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: transparent;
+  color: rgba(255, 255, 255, 0.82);
+  cursor: pointer;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.packages-admin-card .collection-button:hover {
+  border-color: rgba(255, 255, 255, 0.7);
+  color: #fff;
+}
+
+@media (max-width: 700px) {
+  .packages-admin-grid {
+    grid-template-columns: 1fr;
+  }
 }

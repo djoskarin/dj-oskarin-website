@@ -1245,6 +1245,171 @@ async function deleteCollection(collection) {
     window.alert(error.message);
   }
 }
+function showNewPackageForm() {
+  editorContent.innerHTML = `
+    <button
+      class="editor-back-link"
+      id="backToPackagesManager"
+      type="button"
+    >
+      ← Volver a paquetes
+    </button>
+
+    <form class="collection-form" id="newPackageForm">
+      <div class="collection-form-heading">
+        <p class="eyebrow">Nuevo paquete</p>
+        <h3>Agregar paquete</h3>
+      </div>
+
+      <label class="admin-field">
+        <span>Nombre del paquete</span>
+
+        <input
+          id="packageNameInput"
+          type="text"
+          placeholder="Ej. Elegance"
+          required
+        />
+      </label>
+
+      <label class="admin-field">
+        <span>Categoría</span>
+
+        <input
+          id="packageCategoryInput"
+          type="text"
+          placeholder="Ej. Bodas"
+          required
+        />
+      </label>
+
+      <label class="admin-field">
+        <span>Elementos incluidos</span>
+
+        <textarea
+          id="packageFeaturesInput"
+          rows="8"
+          placeholder="Escribe un elemento por línea&#10;4 horas de servicio&#10;Audio&#10;Iluminación"
+          required
+        ></textarea>
+      </label>
+
+      <label class="admin-field">
+        <span>Mensaje de WhatsApp</span>
+
+        <textarea
+          id="packageWhatsappInput"
+          rows="3"
+          placeholder="Hola, me interesó su paquete Elegance para bodas."
+          required
+        ></textarea>
+      </label>
+
+      <label class="event-upload-placeholder">
+        Subir imagen del paquete
+
+        <input
+          id="packageImageInput"
+          type="file"
+          accept="image/*"
+          hidden
+        />
+      </label>
+
+      <div class="event-cover-preview" id="packageImagePreview">
+        <span>Sin imagen</span>
+      </div>
+
+      <p class="collection-form-error" id="packageFormError"></p>
+
+      <button class="editor-action" type="submit">
+        Guardar paquete
+      </button>
+    </form>
+  `;
+
+  document
+    .getElementById("backToPackagesManager")
+    ?.addEventListener("click", showPackagesManager);
+
+  let selectedPackageImage = null;
+
+  document
+    .getElementById("packageImageInput")
+    ?.addEventListener("change", (event) => {
+      const file = event.target.files?.[0];
+
+      if (!file || !file.type.startsWith("image/")) return;
+
+      const reader = new FileReader();
+
+      reader.addEventListener("load", () => {
+        selectedPackageImage = reader.result;
+
+        const preview = document.getElementById(
+          "packageImagePreview"
+        );
+
+        if (preview) {
+          preview.innerHTML = `
+            <img
+              src="${selectedPackageImage}"
+              alt="Vista previa del paquete"
+            />
+          `;
+        }
+      });
+
+      reader.readAsDataURL(file);
+    });
+
+  document
+    .getElementById("newPackageForm")
+    ?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const name = document
+        .getElementById("packageNameInput")
+        ?.value.trim();
+
+      const category = document
+        .getElementById("packageCategoryInput")
+        ?.value.trim();
+
+      const features = document
+        .getElementById("packageFeaturesInput")
+        ?.value.split("\n")
+        .map((item) => item.trim())
+        .filter(Boolean);
+
+      const whatsappMessage = document
+        .getElementById("packageWhatsappInput")
+        ?.value.trim();
+
+      const errorElement = document.getElementById(
+        "packageFormError"
+      );
+
+      if (
+        !name ||
+        !category ||
+        !features?.length ||
+        !whatsappMessage
+      ) {
+        if (errorElement) {
+          errorElement.textContent =
+            "Completa todos los campos.";
+        }
+
+        return;
+      }
+
+      showToast(
+        "El formulario funciona. Ahora conectaremos el guardado."
+      );
+    });
+}
+
 function showPackagesManager() {
   editorContent.innerHTML = `
     <section class="packages-manager">
@@ -1314,10 +1479,10 @@ function showPackagesManager() {
   `;
 
   document
-    .getElementById("addPackageButton")
-    ?.addEventListener("click", () => {
-      showToast("El formulario para agregar paquetes viene ahora.");
-    });
+  .getElementById("addPackageButton")
+  ?.addEventListener("click", () => {
+    showNewPackageForm();
+  });
 
   editorContent
     .querySelectorAll("[data-package-name]")
