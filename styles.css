@@ -1162,17 +1162,18 @@ body.page-ready .scroll-indicator {
 .direct-line-button:hover {
   box-shadow: 0 18px 50px rgba(255, 255, 255, 0.09);
 }.about-profile-photo {
-  width: 120px;
-  height: 120px;
-  margin: 2rem 0 2rem;
+  width: 190px;
+  height: 190px;
+  margin: 2.4rem auto 3rem;
   border-radius: 50%;
   overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .about-profile-photo img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
+  object-fit: cover;
+  object-position: 50% 30%;
 }
