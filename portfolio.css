@@ -224,7 +224,7 @@ body.portfolio-page input {
 
 .portfolio-collection-card h3,
 .portfolio-event-card h3 {
-  margin: 0;
+  margin: 0 0 24px;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(2.6rem, 5vw, 4.6rem);
   font-weight: 400;
@@ -412,4 +412,32 @@ body.portfolio-page input {
     align-items: flex-start;
     flex-direction: column;
   }
+}.portfolio-event-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.portfolio-event-card::before {
+  position: absolute;
+  z-index: -2;
+  inset: 0;
+  content: "";
+  background-image: var(--event-card-image);
+  background-size: cover;
+  background-position: center;
+  opacity: 0.14;
+  transform: scale(1.03);
+}
+
+.portfolio-event-card::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 8, 0.5),
+    rgba(8, 8, 8, 0.92)
+  );
 }

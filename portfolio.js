@@ -215,11 +215,16 @@ function showCollection(collection, searchTerm = "") {
       .map(
         (event, index) => `
           <article
-            class="portfolio-event-card"
-            data-public-event="${escapeHtml(event.id)}"
-            tabindex="0"
-            role="button"
-          >
+  class="portfolio-event-card"
+  data-public-event="${escapeHtml(event.id)}"
+  ${
+    event.cover_image
+      ? `style="--event-card-image: url('${escapeHtml(event.cover_image)}')"`
+      : ""
+  }
+  tabindex="0"
+  role="button"
+>
             <div>
               <p class="portfolio-eyebrow">
                 Evento ${String(index + 1).padStart(2, "0")}
