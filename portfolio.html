@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Portafolio — DJ Oskarin</title>
+
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="portfolio.css" />
+</head>
+
+<body class="portfolio-page">
+  <header class="portfolio-header">
+    <a class="portfolio-logo" href="index.html">
+      DJ OSKARIN
+    </a>
+
+    <nav class="portfolio-nav" aria-label="Portfolio navigation">
+      <a href="index.html">Inicio</a>
+      <a href="#collections">Colecciones</a>
+      <a href="tel:+19564352725">Línea directa</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="portfolio-hero">
+      <p class="portfolio-eyebrow">Portafolio oficial</p>
+
+      <h1>
+        Momentos que viven<br />
+        más allá de la música.
+      </h1>
+
+      <p class="portfolio-intro">
+        Explora una selección de celebraciones, historias y noches
+        inolvidables presentadas por DJ Oskarin.
+      </p>
+
+      <a class="portfolio-explore-link" href="#collections">
+        Explorar colecciones
+        <span aria-hidden="true">↘</span>
+      </a>
+    </section>
+
+    <section class="portfolio-collections-section" id="collections">
+      <div class="portfolio-section-heading">
+        <p class="portfolio-eyebrow">Eventos destacados</p>
+
+        <h2>Colecciones</h2>
+
+        <button
+          class="portfolio-search-toggle"
+          id="portfolioSearchToggle"
+          type="button"
+          aria-label="Buscar eventos"
+        >
+          <span aria-hidden="true">⌕</span>
+        </button>
+      </div>
+
+      <div
+        class="portfolio-search-panel"
+        id="portfolioSearchPanel"
+        hidden
+      >
+        <input
+          id="portfolioSearchInput"
+          type="search"
+          placeholder="Buscar evento..."
+          autocomplete="off"
+        />
+
+        <button
+          id="portfolioSearchClose"
+          type="button"
+          aria-label="Cerrar búsqueda"
+        >
+          ×
+        </button>
+      </div>
+
+      <div class="public-collections-grid" id="publicCollections">
+        <div class="portfolio-empty-state">
+          <p>Cargando colecciones...</p>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="portfolio-events-section"
+      id="portfolioEventsSection"
+      hidden
+    >
+      <button
+        class="portfolio-back-button"
+        id="backToPublicCollections"
+        type="button"
+      >
+        ← Volver a colecciones
+      </button>
+
+      <div id="publicCollectionHeader"></div>
+
+      <div class="public-events-grid" id="publicEvents"></div>
+    </section>
+
+    <section
+      class="portfolio-event-detail"
+      id="portfolioEventDetail"
+      hidden
+    >
+      <button
+        class="portfolio-back-button"
+        id="backToPublicEvents"
+        type="button"
+      >
+        ← Volver a eventos
+      </button>
+
+      <div id="publicEventContent"></div>
+    </section>
+  </main>
+
+  <footer class="portfolio-footer">
+    <p>DJ Oskarin</p>
+
+    <a href="tel:+19564352725">
+      Línea directa
+    </a>
+  </footer>
+
+  <script src="portfolio.js"></script>
+</body>
+</html>
