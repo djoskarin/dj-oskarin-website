@@ -261,64 +261,75 @@ async function requestCollections(options = {}) {
     };
 
     collections.push(collection);
-    saveLocalCollections(collections);
+    saveCollections(collections);
 
-    return {
-      success: true,
-      collection,
-    };
+return {
+  success: true,
+  collection,
+};
+}
+
+if (method === "PATCH") {
+  const collectionIndex = collections.findIndex(
+    (collection) => collection.id === body.id
+  );
+
+  if (collectionIndex === -1) {
+    throw new Error("Collection not found.");
   }
 
-  if (method === "PATCH") {
-    const collectionIndex = collections.findIndex(
-      (collection) => collection.id === body.id
-    );
+  const currentCollection = collections[collectionIndex];
 
-    if (collectionIndex === -1) {
-      throw new Error("Collection not found.");
-    }
+  const updatedCollection = {
+    ...currentCollection,
 
-    const currentCollection = collections[collectionIndex];
+    ...(typeof body.name === "string"
+      ? {
+          name: body.name.trim(),
+          slug: createLocalSlug(body.name),
+        }
+      : {}),
 
-    const updatedCollection = {
-      ...currentCollection,
-      ...(typeof body.name === "string"
-        ? {
-            name: body.name.trim(),
-            slug: createLocalSlug(body.name),
-          }
-        : {}),
-      ...(typeof body.subtitle === "string"
-        ? { subtitle: body.subtitle.trim() || null }
-        : {}),
-      ...(typeof body.is_visible === "boolean"
-        ? { is_visible: body.is_visible }
-        : {}),
-      ...(Number.isInteger(body.display_order)
-        ? { display_order: body.display_order }
-        : {}),
-    };
+    ...(typeof body.subtitle === "string"
+      ? {
+          subtitle: body.subtitle.trim() || null,
+        }
+      : {}),
 
-    collections[collectionIndex] = updatedCollection;
-    saveLocalCollections(collections);
+    ...(typeof body.is_visible === "boolean"
+      ? {
+          is_visible: body.is_visible,
+        }
+      : {}),
 
-    return {
-      success: true,
-      collection: updatedCollection,
-    };
-  }
+    ...(Number.isInteger(body.display_order)
+      ? {
+          display_order: body.display_order,
+        }
+      : {}),
+  };
 
-  if (method === "DELETE") {
-    collections = collections.filter(
-      (collection) => collection.id !== body.id
-    );
+  collections[collectionIndex] = updatedCollection;
 
-    collections = collections.map((collection, index) => ({
-      ...collection,
-      display_order: index,
-    }));
+  saveCollections(collections);
 
-    saveLocalCollections(collections);
+  return {
+    success: true,
+    collection: updatedCollection,
+  };
+}
+
+if (method === "DELETE") {
+  collections = collections.filter(
+    (collection) => collection.id !== body.id
+  );
+
+  collections = collections.map((collection, index) => ({
+    ...collection,
+    display_order: index,
+  }));
+
+  saveCollections(collections);
 
     return {
       success: true,
