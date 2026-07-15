@@ -777,9 +777,41 @@ function showEventForm(collection, eventToEdit = null) {
   }
 </div>
 
-        <button type="button" class="event-upload-placeholder">
-          Agregar fotos
-        </button>
+        <label class="event-upload-placeholder">
+  Agregar fotos
+
+  <input
+    id="eventGalleryInput"
+    type="file"
+    accept="image/*"
+    multiple
+    hidden
+  />
+</label>
+
+<div
+  class="event-gallery-preview"
+  id="eventGalleryPreview"
+>
+  ${
+    editing &&
+    Array.isArray(eventToEdit.gallery) &&
+    eventToEdit.gallery.length
+      ? eventToEdit.gallery
+          .map(
+            (image, index) => `
+              <div class="event-gallery-preview-item">
+                <img
+                  src="${escapeHtml(image)}"
+                  alt="Foto ${index + 1} de ${escapeHtml(eventToEdit.title)}"
+                />
+              </div>
+            `
+          )
+          .join("")
+      : `<p>Todavía no has agregado fotos.</p>`
+  }
+</div>
 
         <button type="button" class="event-upload-placeholder">
           Agregar video opcional
@@ -807,6 +839,80 @@ let selectedCoverImage =
   editing && eventToEdit.cover_image
     ? eventToEdit.cover_image
     : null;
+    let selectedGalleryImages =
+  editing && Array.isArray(eventToEdit.gallery)
+    ? [...eventToEdit.gallery]
+    : [];
+
+function renderGalleryPreview() {
+  const preview = document.getElementById("eventGalleryPreview");
+
+  if (!preview) return;
+
+  if (!selectedGalleryImages.length) {
+    preview.innerHTML = `<p>Todavía no has agregado fotos.</p>`;
+    return;
+  }
+
+  preview.innerHTML = selectedGalleryImages
+    .map(
+      (image, index) => `
+        <div class="event-gallery-preview-item">
+          <img
+            src="${image}"
+            alt="Vista previa de la foto ${index + 1}"
+          />
+
+          <button
+            type="button"
+            data-remove-gallery-image="${index}"
+            aria-label="Eliminar foto ${index + 1}"
+          >
+            ×
+          </button>
+        </div>
+      `
+    )
+    .join("");
+
+  preview
+    .querySelectorAll("[data-remove-gallery-image]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedGalleryImages.splice(
+          Number(button.dataset.removeGalleryImage),
+          1
+        );
+
+        renderGalleryPreview();
+      });
+    });
+}
+
+document
+  .getElementById("eventGalleryInput")
+  ?.addEventListener("change", (event) => {
+    const files = Array.from(event.target.files || []).filter((file) =>
+      file.type.startsWith("image/")
+    );
+
+    if (!files.length) return;
+
+    files.forEach((file) => {
+      const reader = new FileReader();
+
+      reader.addEventListener("load", () => {
+        selectedGalleryImages.push(reader.result);
+        renderGalleryPreview();
+      });
+
+      reader.readAsDataURL(file);
+    });
+
+    event.target.value = "";
+  });
+
+renderGalleryPreview();
 
 document
   .getElementById("eventCoverInput")
@@ -892,6 +998,7 @@ if (editing) {
     city: city || null,
     story: story || null,
     cover_image: selectedCoverImage,
+    gallery: selectedGalleryImages,
   };
 
   saveLocalEvents(events);
@@ -911,7 +1018,7 @@ if (editing) {
     city: city || null,
     story: story || null,
     cover_image: selectedCoverImage,
-    gallery: [],
+    gallery: selectedGalleryImages,
     videos: [],
     display_order: collectionEvents.length,
   };
