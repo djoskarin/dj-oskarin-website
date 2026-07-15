@@ -750,9 +750,32 @@ function showEventForm(collection, eventToEdit = null) {
       <div class="event-media-placeholder">
         <p class="eyebrow">Contenido</p>
 
-        <button type="button" class="event-upload-placeholder">
-          Subir foto principal
-        </button>
+        <label class="event-upload-placeholder">
+  Subir foto principal
+
+  <input
+    id="eventCoverInput"
+    type="file"
+    accept="image/*"
+    hidden
+  />
+</label>
+
+<div
+  class="event-cover-preview"
+  id="eventCoverPreview"
+>
+  ${
+    editing && eventToEdit.cover_image
+      ? `
+        <img
+          src="${escapeHtml(eventToEdit.cover_image)}"
+          alt="${escapeHtml(eventToEdit.title)}"
+        />
+      `
+      : `<span>Sin foto principal</span>`
+  }
+</div>
 
         <button type="button" class="event-upload-placeholder">
           Agregar fotos
@@ -780,6 +803,42 @@ function showEventForm(collection, eventToEdit = null) {
     ?.addEventListener("click", () => {
       showCollectionEvents(collection);
     });
+let selectedCoverImage =
+  editing && eventToEdit.cover_image
+    ? eventToEdit.cover_image
+    : null;
+
+document
+  .getElementById("eventCoverInput")
+  ?.addEventListener("change", (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("Selecciona una imagen.");
+      return;
+    }
+
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => {
+      selectedCoverImage = reader.result;
+
+      const preview = document.getElementById("eventCoverPreview");
+
+      if (preview) {
+        preview.innerHTML = `
+          <img
+            src="${selectedCoverImage}"
+            alt="Vista previa de la foto principal"
+          />
+        `;
+      }
+    });
+
+    reader.readAsDataURL(file);
+  });
 
   document
   .getElementById("eventForm")
@@ -832,6 +891,7 @@ if (editing) {
     venue: venue || null,
     city: city || null,
     story: story || null,
+    cover_image: selectedCoverImage,
   };
 
   saveLocalEvents(events);
@@ -850,7 +910,7 @@ if (editing) {
     venue: venue || null,
     city: city || null,
     story: story || null,
-    cover_image: null,
+    cover_image: selectedCoverImage,
     gallery: [],
     videos: [],
     display_order: collectionEvents.length,

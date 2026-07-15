@@ -826,4 +826,28 @@ a {
   .event-preview-cover-empty {
     min-height: 250px;
   }
+}/* Event cover upload preview */
+
+.event-cover-preview {
+  display: grid;
+  min-height: 260px;
+  overflow: hidden;
+  place-items: center;
+  border: 1px solid var(--border);
+  background: #0d0d0d;
+  color: rgba(255, 255, 255, 0.38);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.event-cover-preview img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+
+.event-upload-placeholder {
+  display: block;
 }
