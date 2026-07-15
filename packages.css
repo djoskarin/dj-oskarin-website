@@ -16,6 +16,7 @@ html {
 
 body.packages-page {
   margin: 0;
+  overflow-x: hidden;
   background: var(--packages-bg);
   color: var(--packages-text);
   font-family: Arial, Helvetica, sans-serif;
@@ -65,12 +66,14 @@ body.packages-page {
   color: var(--packages-text);
 }
 
+/* General page introduction */
+
 .packages-hero {
-  min-height: calc(100vh - 88px);
+  min-height: calc(100svh - 88px);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 10vw 7vw;
+  padding: 10vw 7vw 7rem;
   border-bottom: 1px solid var(--packages-border);
 }
 
@@ -113,10 +116,31 @@ body.packages-page {
   text-transform: uppercase;
 }
 
+/* Package category heading */
+
+.packages-category {
+  padding: 110px 7vw 60px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid var(--packages-border);
+}
+
+.packages-category h2 {
+  margin: 12px 0 0;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(4rem, 7vw, 6rem);
+  font-weight: 400;
+  line-height: 0.9;
+}
+
+/* Package cards */
+
+#xv-packages {
+  scroll-margin-top: 88px;
+}
+
 .packages-list {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  min-height: 100vh;
 }
 
 .package-card {
@@ -130,19 +154,23 @@ body.packages-page {
   background-size: cover;
 }
 
+.package-card:last-child {
+  border-right: 0;
+}
+
 .package-card-overlay {
   position: absolute;
   inset: 0;
   background:
     linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.26),
-      rgba(0, 0, 0, 0.82) 58%,
+      rgba(0, 0, 0, 0.3),
+      rgba(0, 0, 0, 0.8) 58%,
       rgba(0, 0, 0, 0.96)
     ),
     linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.55),
+      rgba(0, 0, 0, 0.52),
       rgba(0, 0, 0, 0.12)
     );
 }
@@ -197,6 +225,7 @@ body.packages-page {
   text-decoration: none;
   font-size: 0.7rem;
   letter-spacing: 0.16em;
+  text-align: center;
   text-transform: uppercase;
   backdrop-filter: blur(10px);
   transition: var(--packages-transition);
@@ -207,9 +236,11 @@ body.packages-page {
   background: rgba(255, 255, 255, 0.08);
 }
 
+/* Personalized package */
+
 .custom-package {
   position: relative;
-  min-height: 82vh;
+  min-height: 82svh;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -225,29 +256,32 @@ body.packages-page {
   background:
     linear-gradient(
       90deg,
-      rgba(0, 0, 0, 0.92),
-      rgba(0, 0, 0, 0.55) 56%,
-      rgba(0, 0, 0, 0.28)
+      rgba(0, 0, 0, 0.94),
+      rgba(0, 0, 0, 0.62) 58%,
+      rgba(0, 0, 0, 0.34)
     ),
     linear-gradient(
       180deg,
-      rgba(0, 0, 0, 0.2),
-      rgba(0, 0, 0, 0.7)
+      rgba(0, 0, 0, 0.24),
+      rgba(0, 0, 0, 0.78)
     );
 }
 
 .custom-package-content {
   position: relative;
   z-index: 1;
+  width: 100%;
   max-width: 760px;
 }
 
 .custom-package h2 {
+  max-width: 760px;
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(4rem, 8vw, 7.8rem);
   font-weight: 400;
   line-height: 0.9;
+  overflow-wrap: break-word;
 }
 
 .custom-package p:not(.packages-eyebrow) {
@@ -257,6 +291,8 @@ body.packages-page {
   font-size: 1rem;
   line-height: 1.8;
 }
+
+/* Footer */
 
 .packages-footer {
   display: flex;
@@ -273,12 +309,21 @@ body.packages-page {
   letter-spacing: 0.12em;
 }
 
+/* Tablet */
+
 @media (max-width: 860px) {
+  .packages-hero {
+    min-height: auto;
+    padding-top: 9rem;
+    padding-bottom: 6rem;
+  }
+
   .packages-list {
     grid-template-columns: 1fr;
   }
 
   .package-card {
+    width: 100%;
     min-height: 760px;
     border-right: 0;
   }
@@ -291,7 +336,13 @@ body.packages-page {
   .package-card h2 {
     font-size: clamp(3.6rem, 14vw, 6rem);
   }
+
+  .custom-package {
+    width: 100%;
+  }
 }
+
+/* Phone */
 
 @media (max-width: 700px) {
   .packages-header {
@@ -299,22 +350,53 @@ body.packages-page {
     padding: 0 20px;
   }
 
+  .packages-logo {
+    font-size: 0.98rem;
+  }
+
   .packages-nav {
-    gap: 14px;
+    gap: 18px;
+  }
+
+  .packages-nav a {
+    font-size: 0.66rem;
   }
 
   .packages-nav a:nth-child(2) {
     display: none;
   }
 
-  .packages-hero,
-  .custom-package {
-    padding-right: 24px;
-    padding-left: 24px;
+  .packages-hero {
+    min-height: auto;
+    justify-content: flex-start;
+    padding: 8rem 24px 5rem;
   }
 
   .packages-hero h1 {
-    font-size: clamp(3.8rem, 16vw, 6.5rem);
+    font-size: clamp(3.25rem, 14vw, 5.4rem);
+    line-height: 0.94;
+  }
+
+  .packages-intro {
+    margin-top: 28px;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+
+  .packages-explore-link {
+    margin-top: 34px;
+  }
+
+  .packages-category {
+    padding: 76px 24px 42px;
+  }
+
+  .packages-category h2 {
+    font-size: clamp(3.5rem, 16vw, 5.4rem);
+  }
+
+  #xv-packages {
+    scroll-margin-top: 76px;
   }
 
   .package-card {
@@ -323,47 +405,52 @@ body.packages-page {
 
   .package-card-content {
     min-height: 680px;
+    padding: 38px 24px 42px;
+  }
+
+  .package-card h2 {
+    font-size: clamp(3.7rem, 16vw, 5.8rem);
+  }
+
+  .package-features {
+    margin: 44px 0;
+  }
+
+  .package-features li {
+    padding: 15px 0;
+    font-size: 0.92rem;
   }
 
   .package-whatsapp {
     width: 100%;
+    min-width: 0;
   }
 
   .custom-package {
-    min-height: 720px;
+    min-height: auto;
+    align-items: flex-start;
+    padding: 7rem 24px 8rem;
+    background-position: center;
+  }
+
+  .custom-package h2 {
+    max-width: 100%;
+    font-size: clamp(3.15rem, 14vw, 5.1rem);
+    line-height: 0.94;
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+
+  .custom-package p:not(.packages-eyebrow) {
+    max-width: 100%;
+    margin: 28px 0 38px;
+    font-size: 0.95rem;
+    line-height: 1.75;
   }
 
   .packages-footer {
     align-items: flex-start;
     flex-direction: column;
-  }
-}.packages-category {
-  padding: 110px 7vw 60px;
-  border-top: 1px solid rgba(255,255,255,.08);
-}
-
-.packages-category h2{
-  margin:12px 0 0;
-  font-family: Georgia,"Times New Roman",serif;
-  font-size:clamp(4rem,7vw,6rem);
-  font-weight:400;
-  line-height:.9;
-}#xv-packages {
-  scroll-margin-top: 76px;
-}
-
-@media (max-width: 860px) {
-  .packages-list {
-    grid-template-columns: 1fr;
-  }
-
-  .package-card,
-  .custom-package {
-    width: 100%;
-  }
-
-  .package-card h2,
-  .custom-package h2 {
-    overflow-wrap: anywhere;
+    padding: 30px 24px;
   }
 }
