@@ -1073,10 +1073,18 @@ document
     reader.readAsDataURL(file);
   });
 
-  document
+ document
   .getElementById("eventForm")
   ?.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    const form = event.currentTarget;
+    const submitButton = form.querySelector(
+      'button[type="submit"]'
+    );
+    const errorElement = document.getElementById(
+      "eventFormError"
+    );
 
     const title = document
       .getElementById("eventTitle")
@@ -1099,63 +1107,86 @@ document
       .value.trim();
 
     if (!title) {
-      document.getElementById("eventFormError").textContent =
-        "Write the event name.";
+      errorElement.textContent =
+        "Escribe el nombre del evento.";
       return;
     }
 
-    const events = readLocalEvents();
+    errorElement.textContent = "";
 
-if (editing) {
-  const eventIndex = events.findIndex(
-    (item) => item.id === eventToEdit.id
-  );
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "GUARDANDO...";
+    }
 
-  if (eventIndex === -1) {
-    document.getElementById("eventFormError").textContent =
-      "No se encontró el evento.";
-    return;
-  }
+    try {
+      const events = readLocalEvents();
 
-  events[eventIndex] = {
-    ...events[eventIndex],
-    title,
-    event_date: eventDate || null,
-    venue: venue || null,
-    city: city || null,
-    story: story || null,
-    cover_image: selectedCoverImage,
-    gallery: selectedGalleryImages,
-  };
+      if (editing) {
+        const eventIndex = events.findIndex(
+          (item) => item.id === eventToEdit.id
+        );
 
-  saveLocalEvents(events);
-  showToast("✓ Cambios guardados");
-} else {
-  const collectionEvents = events.filter(
-    (item) => item.collection_id === collection.id
-  );
+        if (eventIndex === -1) {
+          throw new Error(
+            "No se encontró el evento."
+          );
+        }
 
-  const newEvent = {
-    id: createLocalId(),
-    collection_id: collection.id,
-    created_at: new Date().toISOString(),
-    title,
-    event_date: eventDate || null,
-    venue: venue || null,
-    city: city || null,
-    story: story || null,
-    cover_image: selectedCoverImage,
-    gallery: selectedGalleryImages,
-    videos: [],
-    display_order: collectionEvents.length,
-  };
+        events[eventIndex] = {
+          ...events[eventIndex],
+          title,
+          event_date: eventDate || null,
+          venue: venue || null,
+          city: city || null,
+          story: story || null,
+          cover_image: selectedCoverImage,
+          gallery: selectedGalleryImages,
+        };
 
-  events.push(newEvent);
-  saveLocalEvents(events);
-  showToast("✓ Evento guardado");
-}
+        saveLocalEvents(events);
+        showToast("✓ Cambios guardados");
+      } else {
+        const collectionEvents = events.filter(
+          (item) =>
+            item.collection_id === collection.id
+        );
 
-    showCollectionEvents(collection);
+        const newEvent = {
+          id: createLocalId(),
+          collection_id: collection.id,
+          created_at: new Date().toISOString(),
+          title,
+          event_date: eventDate || null,
+          venue: venue || null,
+          city: city || null,
+          story: story || null,
+          cover_image: selectedCoverImage,
+          gallery: selectedGalleryImages,
+          videos: [],
+          display_order: collectionEvents.length,
+        };
+
+        events.push(newEvent);
+        saveLocalEvents(events);
+        showToast("✓ Evento guardado");
+      }
+
+      showCollectionEvents(collection);
+    } catch (error) {
+      console.error("Event save failed:", error);
+
+      errorElement.textContent =
+        error?.message ||
+        "No se pudo guardar el evento.";
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = editing
+          ? "GUARDAR CAMBIOS"
+          : "GUARDAR EVENTO";
+      }
+    }
   });
   }
 
