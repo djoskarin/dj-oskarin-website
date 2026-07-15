@@ -227,7 +227,7 @@ video {
   height: 100%;
   object-fit: cover;
   object-position: center center;
-  opacity: 0.27;
+  opacity: 0.34;
   filter: grayscale(1) contrast(1.08) brightness(0.72);
   transform: scale(1.03);
   transition: opacity 1.2s ease;
