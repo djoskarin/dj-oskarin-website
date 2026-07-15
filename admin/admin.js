@@ -1,5 +1,7 @@
 "use strict";
 
+const PACKAGES_STORAGE_KEY = "djOskarinPackages";
+
 const adminLoading = document.getElementById("adminLoading");
 const logoutButton = document.getElementById("logoutButton");
 
@@ -1245,6 +1247,68 @@ async function deleteCollection(collection) {
     window.alert(error.message);
   }
 }
+function getSavedPackages() {
+  try {
+    const savedPackages = localStorage.getItem(
+      PACKAGES_STORAGE_KEY
+    );
+
+    if (savedPackages) {
+      return JSON.parse(savedPackages);
+    }
+
+    return [
+      {
+        id: "esencial-xv",
+        name: "Esencial",
+        category: "XV's",
+        features: [
+          "4 horas de servicio",
+          "Audio",
+          "Iluminación",
+          "DJ Oskarin + animador",
+          "Bailarines para vals y remix",
+          "Show de animación",
+          "1 arlequín",
+          "1 robot",
+          "Artículos de animación para tus invitados",
+        ],
+        whatsappMessage:
+          "Hola, me interesó su paquete Esencial para XV's.",
+        image: "assets/package-esencial.jpg",
+        visible: true,
+      },
+      {
+        id: "signature-xv",
+        name: "Signature",
+        category: "XV's",
+        features: [
+          "Todo lo incluido en Esencial",
+          "Pantalla LED",
+          "Confetti",
+          "Pirotecnia fría",
+          "Hielo seco",
+          "Visuales para pantalla",
+        ],
+        whatsappMessage:
+          "Hola, me interesó su paquete Signature para XV's.",
+        image: "assets/package-signature.jpg",
+        visible: true,
+      },
+    ];
+  } catch (error) {
+    console.error("Could not load packages:", error);
+    return [];
+  }
+}
+
+function savePackages(packages) {
+  localStorage.setItem(
+    PACKAGES_STORAGE_KEY,
+    JSON.stringify(packages)
+  );
+}
+
 function showNewPackageForm() {
   editorContent.innerHTML = `
     <button
@@ -1404,9 +1468,23 @@ function showNewPackageForm() {
         return;
       }
 
-      showToast(
-        "El formulario funciona. Ahora conectaremos el guardado."
-      );
+     const packages = getSavedPackages();
+
+const newPackage = {
+  id: `package-${Date.now()}`,
+  name,
+  category,
+  features,
+  whatsappMessage,
+  image: selectedPackageImage,
+  visible: true,
+};
+
+packages.push(newPackage);
+savePackages(packages);
+
+showToast("Paquete guardado.");
+showPackagesManager();
     });
 }
 
