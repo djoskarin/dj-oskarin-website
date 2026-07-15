@@ -1017,27 +1017,58 @@ function renderGalleryPreview() {
 
 document
   .getElementById("eventGalleryInput")
-  ?.addEventListener("change", (event) => {
-    const files = Array.from(event.target.files || []).filter((file) =>
-      file.type.startsWith("image/")
+  ?.addEventListener("change", async (event) => {
+    const files = Array.from(event.target.files || []).filter(
+      (file) => file.type.startsWith("image/")
     );
 
     if (!files.length) return;
 
-    files.forEach(async (file) => {
-  try {
-    const compressedImage = await compressImageFile(file);
+    showToast("Subiendo fotos...");
 
-    selectedGalleryImages.push(compressedImage);
-    renderGalleryPreview();
-  } catch (error) {
-    console.error("Photo compression failed:", error);
-    showToast("No se pudo procesar una foto.");
-  }
-});
+    for (const file of files) {
+      try {
+        const formData = new FormData();
+
+        formData.append("file", file);
+        formData.append(
+          "upload_preset",
+          "dj_oskarin_gallery"
+        );
+        formData.append(
+          "folder",
+          "dj-oskarin/events"
+        );
+
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/xl0azxka/image/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Cloudinary upload failed.");
+        }
+
+        const uploadedImage = await response.json();
+
+        selectedGalleryImages.push(
+          uploadedImage.secure_url
+        );
+
+        renderGalleryPreview();
+      } catch (error) {
+        console.error("Photo upload failed:", error);
+        showToast("No se pudo subir una foto.");
+      }
+    }
 
     event.target.value = "";
+    showToast("✓ Fotos subidas");
   });
+
 
 renderGalleryPreview();
 
