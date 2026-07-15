@@ -1245,6 +1245,90 @@ async function deleteCollection(collection) {
     window.alert(error.message);
   }
 }
+function showPackagesManager() {
+  editorContent.innerHTML = `
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Paquetes</h3>
+          <p class="packages-manager-description">
+            Administra tus categorías y paquetes desde aquí.
+          </p>
+        </div>
+
+        <button
+          class="editor-action"
+          id="addPackageButton"
+          type="button"
+        >
+          Agregar paquete
+        </button>
+      </div>
+
+      <section class="packages-admin-category">
+        <div class="packages-admin-category-header">
+          <div>
+            <p class="eyebrow">Categoría</p>
+            <h4>XV's</h4>
+          </div>
+        </div>
+
+        <div class="packages-admin-grid">
+          <article class="packages-admin-card">
+            <p class="eyebrow">Paquete 01</p>
+            <h5>Esencial</h5>
+
+            <p>
+              9 elementos incluidos.
+            </p>
+
+            <button
+              class="collection-button"
+              type="button"
+              data-package-name="Esencial"
+            >
+              Editar
+            </button>
+          </article>
+
+          <article class="packages-admin-card">
+            <p class="eyebrow">Paquete 02</p>
+            <h5>Signature</h5>
+
+            <p>
+              6 elementos incluidos.
+            </p>
+
+            <button
+              class="collection-button"
+              type="button"
+              data-package-name="Signature"
+            >
+              Editar
+            </button>
+          </article>
+        </div>
+      </section>
+    </section>
+  `;
+
+  document
+    .getElementById("addPackageButton")
+    ?.addEventListener("click", () => {
+      showToast("El formulario para agregar paquetes viene ahora.");
+    });
+
+  editorContent
+    .querySelectorAll("[data-package-name]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        showToast(
+          `La edición de ${button.dataset.packageName} viene ahora.`
+        );
+      });
+    });
+}
 
 function openPlaceholderSection(sectionName) {
   const information = {
@@ -1289,14 +1373,21 @@ dashboardCards.forEach((card) => {
   card.addEventListener("click", async () => {
     const sectionName = card.dataset.section;
 
-    if (sectionName === "eventos") {
-      editorTitle.textContent = "Eventos destacados";
-      openEditor();
-      await loadCollections();
-      return;
-    }
+   if (sectionName === "eventos") {
+  editorTitle.textContent = "Eventos destacados";
+  openEditor();
+  await loadCollections();
+  return;
+}
 
-    openPlaceholderSection(sectionName);
+if (sectionName === "packages") {
+  editorTitle.textContent = "Paquetes";
+  openEditor();
+  showPackagesManager();
+  return;
+}
+
+openPlaceholderSection(sectionName);
   });
 });
 
