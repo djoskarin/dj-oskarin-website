@@ -90,6 +90,20 @@ function createLocalSlug(value) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "");
 }
+function saveCollections(collections) {
+  try {
+    localStorage.setItem(
+      COLLECTIONS_STORAGE_KEY,
+      JSON.stringify(collections)
+    );
+  } catch (error) {
+    console.error("Collection storage failed:", error);
+
+    throw new Error(
+      "No se pudo guardar la colección."
+    );
+  }
+}
 
 function readLocalCollections() {
   try {
