@@ -444,6 +444,13 @@ function showCollectionEvents(collection) {
   type="button"
   data-edit-event="${escapeHtml(event.id)}"
 >
+ Abrir
+  </button>
+
+   <button
+    type="button"
+    data-edit-event="${escapeHtml(event.id)}"
+  >  
   Editar
 </button>
 
@@ -509,6 +516,20 @@ function showCollectionEvents(collection) {
     ?.addEventListener("click", () => {
       showEventForm(collection);
     });
+  editorContent
+  .querySelectorAll("[data-open-event]")
+  .forEach((button) => {
+    button.addEventListener("click", () => {
+      const eventToOpen = events.find(
+        (event) => event.id === button.dataset.openEvent
+      );
+
+      if (!eventToOpen) return;
+
+      showEventPreview(collection, eventToOpen);
+    });
+  });
+
 editorContent
   .querySelectorAll("[data-edit-event]")
   .forEach((button) => {
@@ -539,6 +560,119 @@ editorContent
         showToast("✓ Evento eliminado");
         showCollectionEvents(collection);
       });
+    });
+}
+function showEventPreview(collection, event) {
+  const formattedDate = event.event_date
+    ? new Date(`${event.event_date}T12:00:00`).toLocaleDateString("es-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Fecha por confirmar";
+
+  editorContent.innerHTML = `
+    <button class="editor-back-link" id="backToCollectionEvents" type="button">
+      ← Volver a ${escapeHtml(collection.name)}
+    </button>
+
+    <article class="event-preview">
+      <div class="event-preview-top">
+        <p class="eyebrow">Vista previa</p>
+
+        <h3>${escapeHtml(event.title)}</h3>
+
+        <div class="event-preview-details">
+          <p>${escapeHtml(formattedDate)}</p>
+
+          ${
+            event.venue
+              ? `<p>${escapeHtml(event.venue)}</p>`
+              : ""
+          }
+
+          ${
+            event.city
+              ? `<p>${escapeHtml(event.city)}</p>`
+              : ""
+          }
+        </div>
+      </div>
+
+      <div class="event-preview-cover">
+        ${
+          event.cover_image
+            ? `
+              <img
+                src="${escapeHtml(event.cover_image)}"
+                alt="${escapeHtml(event.title)}"
+              />
+            `
+            : `
+              <div class="event-preview-cover-empty">
+                <span>Foto principal</span>
+              </div>
+            `
+        }
+      </div>
+
+      ${
+        event.story
+          ? `
+            <div class="event-preview-story">
+              <p class="eyebrow">La historia</p>
+              <p>${escapeHtml(event.story)}</p>
+            </div>
+          `
+          : ""
+      }
+
+      <div class="event-preview-sections">
+        <div>
+          <p class="eyebrow">Galería</p>
+          <h4>
+            ${
+              Array.isArray(event.gallery)
+                ? event.gallery.length
+                : 0
+            }
+            fotos
+          </h4>
+        </div>
+
+        <div>
+          <p class="eyebrow">Videos</p>
+          <h4>
+            ${
+              Array.isArray(event.videos)
+                ? event.videos.length
+                : 0
+            }
+            videos
+          </h4>
+        </div>
+      </div>
+
+      <button
+        class="editor-action"
+        id="editEventFromPreview"
+        type="button"
+      >
+        Editar evento
+      </button>
+    </article>
+  `;
+
+  document
+    .getElementById("backToCollectionEvents")
+    ?.addEventListener("click", () => {
+      showCollectionEvents(collection);
+    });
+
+  document
+    .getElementById("editEventFromPreview")
+    ?.addEventListener("click", () => {
+      showEventForm(collection, event);
     });
 }
 
