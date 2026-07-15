@@ -1380,7 +1380,7 @@ dashboardCards.forEach((card) => {
   return;
 }
 
-if (sectionName === "packages") {
+if (sectionName === "paquetes") {
   editorTitle.textContent = "Paquetes";
   openEditor();
   showPackagesManager();
