@@ -141,7 +141,12 @@ function readLocalEvents() {
     return [];
   }
 }
-function compressImageFile(file, maxSize = 1400, quality = 0.72) {
+
+function compressImageFile(
+  file,
+  maxSize = 1400,
+  quality = 0.72
+) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -157,10 +162,14 @@ function compressImageFile(file, maxSize = 1400, quality = 0.72) {
         let height = image.height;
 
         if (width > height && width > maxSize) {
-          height = Math.round((height * maxSize) / width);
+          height = Math.round(
+            (height * maxSize) / width
+          );
           width = maxSize;
         } else if (height > maxSize) {
-          width = Math.round((width * maxSize) / height);
+          width = Math.round(
+            (width * maxSize) / height
+          );
           height = maxSize;
         }
 
@@ -169,9 +178,28 @@ function compressImageFile(file, maxSize = 1400, quality = 0.72) {
         canvas.height = height;
 
         const context = canvas.getContext("2d");
-        context.drawImage(image, 0, 0, width, height);
 
-        resolve(canvas.toDataURL("image/jpeg", quality));
+        if (!context) {
+          reject(
+            new Error("No se pudo procesar la imagen.")
+          );
+          return;
+        }
+
+        context.drawImage(
+          image,
+          0,
+          0,
+          width,
+          height
+        );
+
+        resolve(
+          canvas.toDataURL(
+            "image/jpeg",
+            quality
+          )
+        );
       });
 
       image.src = reader.result;
@@ -179,13 +207,6 @@ function compressImageFile(file, maxSize = 1400, quality = 0.72) {
 
     reader.readAsDataURL(file);
   });
-}
-
-function saveLocalEvents(events) {
-  localStorage.setItem(
-    EVENTS_STORAGE_KEY,
-    JSON.stringify(events)
-  );
 }
 
 function createLocalId() {
