@@ -347,7 +347,38 @@ function showEvent(event) {
           `
           : ""
       }
+${
+  galleryCount
+    ? `
+      <section class="public-event-gallery">
+        <div class="public-event-gallery-heading">
+          <p class="portfolio-eyebrow">Galería</p>
+          <h3>${galleryCount} fotos</h3>
+        </div>
 
+        <div class="public-event-gallery-grid">
+          ${event.gallery
+            .map(
+              (image, index) => `
+                <button
+                  class="public-event-gallery-item"
+                  type="button"
+                  data-gallery-image="${index}"
+                  aria-label="Abrir foto ${index + 1}"
+                >
+                  <img
+                    src="${escapeHtml(image)}"
+                    alt="Foto ${index + 1} de ${escapeHtml(event.title)}"
+                  />
+                </button>
+              `
+            )
+            .join("")}
+        </div>
+      </section>
+    `
+    : ""
+}
       <div class="event-preview-sections">
         <div>
           <p class="portfolio-eyebrow">Galería</p>
