@@ -4,10 +4,13 @@ import { openCloudinaryUpload } from "../cloudinary.js";
 import {
   addDoc,
   collection,
+  deleteDoc,
+  doc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
+  updateDoc,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 "use strict";
@@ -246,12 +249,20 @@ async function requestCollections(options = {}) {
     }
   }
 
-  let collections = readLocalCollections();
-
   if (method === "GET") {
+    const collectionsQuery = query(
+      collection(db, "portfolioCollections"),
+      orderBy("display_order", "asc")
+    );
+
+    const snapshot = await getDocs(collectionsQuery);
+
     return {
       success: true,
-      collections,
+      collections: snapshot.docs.map((collectionDocument) => ({
+        id: collectionDocument.id,
+        ...collectionDocument.data(),
+      })),
     };
   }
 
@@ -260,97 +271,103 @@ async function requestCollections(options = {}) {
     const subtitle = String(body.subtitle || "").trim();
 
     if (!name) {
-      throw new Error("Write the collection name.");
+      throw new Error("Escribe el nombre de la colección.");
     }
 
-    const collection = {
-      id: createLocalId(),
-      created_at: new Date().toISOString(),
-      name,
-      slug: createLocalSlug(name),
-      subtitle: subtitle || null,
-      cover_image: null,
-      is_visible: true,
-      display_order: collections.length,
+    const currentSnapshot = await getDocs(
+      collection(db, "portfolioCollections")
+    );
+
+    const createdDocument = await addDoc(
+      collection(db, "portfolioCollections"),
+      {
+        name,
+        slug: createLocalSlug(name),
+        subtitle: subtitle || null,
+        cover_image: null,
+        is_visible: true,
+        display_order: currentSnapshot.size,
+        created_at: serverTimestamp(),
+      }
+    );
+
+    return {
+      success: true,
+      collection: {
+        id: createdDocument.id,
+        name,
+        slug: createLocalSlug(name),
+        subtitle: subtitle || null,
+        cover_image: null,
+        is_visible: true,
+        display_order: currentSnapshot.size,
+      },
     };
-
-    collections.push(collection);
-    saveCollections(collections);
-
-return {
-  success: true,
-  collection,
-};
-}
-
-if (method === "PATCH") {
-  const collectionIndex = collections.findIndex(
-    (collection) => collection.id === body.id
-  );
-
-  if (collectionIndex === -1) {
-    throw new Error("Collection not found.");
   }
 
-  const currentCollection = collections[collectionIndex];
+  if (method === "PATCH") {
+    const id = String(body.id || "").trim();
 
-  const updatedCollection = {
-    ...currentCollection,
+    if (!id) {
+      throw new Error("No se encontró la colección.");
+    }
 
-    ...(typeof body.name === "string"
-      ? {
-          name: body.name.trim(),
-          slug: createLocalSlug(body.name),
-        }
-      : {}),
+    const updates = {};
 
-    ...(typeof body.subtitle === "string"
-      ? {
-          subtitle: body.subtitle.trim() || null,
-        }
-      : {}),
+    if (typeof body.name === "string") {
+      const name = body.name.trim();
 
-    ...(typeof body.is_visible === "boolean"
-      ? {
-          is_visible: body.is_visible,
-        }
-      : {}),
+      if (!name) {
+        throw new Error("El nombre no puede quedar vacío.");
+      }
 
-    ...(Number.isInteger(body.display_order)
-      ? {
-          display_order: body.display_order,
-        }
-      : {}),
-  };
+      updates.name = name;
+      updates.slug = createLocalSlug(name);
+    }
 
-  collections[collectionIndex] = updatedCollection;
+    if (typeof body.subtitle === "string") {
+      updates.subtitle = body.subtitle.trim() || null;
+    }
 
-  saveCollections(collections);
+    if (typeof body.is_visible === "boolean") {
+      updates.is_visible = body.is_visible;
+    }
 
-  return {
-    success: true,
-    collection: updatedCollection,
-  };
-}
+    if (Number.isInteger(body.display_order)) {
+      updates.display_order = body.display_order;
+    }
 
-if (method === "DELETE") {
-  collections = collections.filter(
-    (collection) => collection.id !== body.id
-  );
+    await updateDoc(
+      doc(db, "portfolioCollections", id),
+      updates
+    );
 
-  collections = collections.map((collection, index) => ({
-    ...collection,
-    display_order: index,
-  }));
+    return {
+      success: true,
+      collection: {
+        id,
+        ...updates,
+      },
+    };
+  }
 
-  saveCollections(collections);
+  if (method === "DELETE") {
+    const id = String(body.id || "").trim();
+
+    if (!id) {
+      throw new Error("No se encontró la colección.");
+    }
+
+    await deleteDoc(
+      doc(db, "portfolioCollections", id)
+    );
 
     return {
       success: true,
     };
   }
 
-  throw new Error("Unsupported action.");
+  throw new Error("Acción no disponible.");
 }
 
 async function loadCollections() {
