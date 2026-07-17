@@ -511,7 +511,7 @@ function renderCollections(collections) {
         if (!collection) return;
 
 if (button.dataset.action === "open") {
-  showCollectionEvents(collection);
+showCollectionEvents(collection);
 }
         if (button.dataset.action === "edit") {
           showCollectionForm(collection);
@@ -877,12 +877,12 @@ function showEventPreview(collection, event) {
     });
 }
 
-function showEventForm(collection, eventToEdit = null) {
+function showEventForm(collectionItem, eventToEdit = null) {
    const editing = Boolean(eventToEdit);
 
   editorContent.innerHTML = `
     <button class="editor-back-link" id="backToCollectionEvents" type="button">
-      ← Volver a ${escapeHtml(collection.name)}
+      ← Volver a ${escapeHtml(collectionItem.name)}
     </button>
 
     <form class="collection-form" id="eventForm">
@@ -1051,7 +1051,7 @@ function showEventForm(collection, eventToEdit = null) {
   document
     .getElementById("backToCollectionEvents")
     ?.addEventListener("click", () => {
-      showCollectionEvents(collection);
+      showCollectionEvents(collectionItem);
     });
 let selectedCoverImage =
   editing && eventToEdit.cover_image
@@ -1245,7 +1245,7 @@ document
 
     try {
   const eventData = {
-    collection_id: collection.id,
+    collection_id: collectionItem.id,
     title,
     event_date: eventDate || null,
     venue: venue || null,
@@ -1265,7 +1265,7 @@ document
   } else {
     const existingEventsQuery = query(
       collection(db, "portfolioEvents"),
-      where("collection_id", "==", collection.id)
+      where("collection_id", "==", collectionItem.id)
     );
 
     const existingEventsSnapshot = await getDocs(
@@ -1285,7 +1285,7 @@ document
     showToast("✓ Evento guardado");
   }
 
-  await showCollectionEvents(collection);
+  await showCollectionEvents(collectionItem);
     } catch (error) {
       console.error("Event save failed:", error);
 
