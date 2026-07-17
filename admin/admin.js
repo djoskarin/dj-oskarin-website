@@ -11,6 +11,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
 
 "use strict";
@@ -526,94 +527,25 @@ if (button.dataset.action === "open") {
       });
     });
 }
-function showCollectionEvents(collection) {
-  const events = readLocalEvents()
-    .filter((item) => item.collection_id === collection.id)
-    .sort(
-      (a, b) =>
-        Number(a.display_order || 0) -
-        Number(b.display_order || 0)
-    );
-
-  const eventCards = events.length
-    ? events
-        .map(
-  (event, index) => `
-            <article class="event-admin-card">
-              <div class="event-admin-number">
-               ${index + 1}
-              </div>
-
-              <div class="event-admin-info">
-                <p class="event-admin-date">
-                  ${
-                    event.event_date
-                      ? escapeHtml(event.event_date)
-                      : "Sin fecha"
-                  }
-                </p>
-
-                <h3>${escapeHtml(event.title)}</h3>
-
-                <p>
-                  ${escapeHtml(
-                    [event.venue, event.city]
-                      .filter(Boolean)
-                      .join(" · ") || "Sin lugar"
-                  )}
-                </p>
-              </div>
-
-              <div class="event-admin-actions">
-                <button
-  type="button"
-  data-edit-event="${escapeHtml(event.id)}"
->
- Abrir
-  </button>
-
-   <button
-    type="button"
-    data-edit-event="${escapeHtml(event.id)}"
-  >  
-  Editar
-</button>
-
-                <button
-                  class="danger-action"
-                  type="button"
-                  data-delete-event="${escapeHtml(event.id)}"
-                >
-                  Eliminar
-                </button>
-              </div>
-            </article>
-          `
-        )
-        .join("")
-    : `
-        <div class="editor-empty collection-events-empty">
-          <h3>Todavía no hay eventos</h3>
-          <p>
-            Cuando agregues tu primer evento, aparecerá aquí dentro de
-            ${escapeHtml(collection.name)}.
-          </p>
-        </div>
-      `;
-
+async function showCollectionEvents(collectionItem) {
   editorContent.innerHTML = `
-    <button class="editor-back-link" id="backToCollections" type="button">
+    <button
+      class="editor-back-link"
+      id="backToCollections"
+      type="button"
+    >
       ← Volver a colecciones
     </button>
 
     <div class="collection-events-heading">
       <div>
         <p class="eyebrow">Colección</p>
-        <h3>${escapeHtml(collection.name)}</h3>
+
+        <h3>${escapeHtml(collectionItem.name)}</h3>
 
         ${
-          collection.subtitle
-            ? `<p>${escapeHtml(collection.subtitle)}</p>`
+          collectionItem.subtitle
+            ? `<p>${escapeHtml(collectionItem.subtitle)}</p>`
             : ""
         }
       </div>
@@ -628,7 +560,9 @@ function showCollectionEvents(collection) {
     </div>
 
     <div class="events-admin-list">
-      ${eventCards}
+      <div class="editor-empty">
+        <p>Cargando eventos...</p>
+      </div>
     </div>
   `;
 
@@ -639,53 +573,195 @@ function showCollectionEvents(collection) {
   document
     .getElementById("newEventButton")
     ?.addEventListener("click", () => {
-      showEventForm(collection);
+      showEventForm(collectionItem);
     });
-  editorContent
-  .querySelectorAll("[data-open-event]")
-  .forEach((button) => {
-    button.addEventListener("click", () => {
-      const eventToOpen = events.find(
-        (event) => event.id === button.dataset.openEvent
+
+  try {
+    const eventsQuery = query(
+      collection(db, "portfolioEvents"),
+      where("collection_id", "==", collectionItem.id)
+    );
+
+    const snapshot = await getDocs(eventsQuery);
+
+    const events = snapshot.docs
+      .map((eventDocument) => ({
+        id: eventDocument.id,
+        ...eventDocument.data(),
+      }))
+      .sort(
+        (a, b) =>
+          Number(a.display_order || 0) -
+          Number(b.display_order || 0)
       );
 
-      if (!eventToOpen) return;
+    const eventsList = editorContent.querySelector(
+      ".events-admin-list"
+    );
 
-      showEventPreview(collection, eventToOpen);
-    });
-  });
+    if (!eventsList) return;
 
-editorContent
-  .querySelectorAll("[data-edit-event]")
-  .forEach((button) => {
-    button.addEventListener("click", () => {
-      const eventToEdit = events.find(
-        (event) => event.id === button.dataset.editEvent
-      );
+    if (!events.length) {
+      eventsList.innerHTML = `
+        <div class="editor-empty collection-events-empty">
+          <h3>Todavía no hay eventos</h3>
 
-      if (!eventToEdit) return;
+          <p>
+            Cuando agregues tu primer evento, aparecerá aquí dentro de
+            ${escapeHtml(collectionItem.name)}.
+          </p>
+        </div>
+      `;
 
-      showEventForm(collection, eventToEdit);
-    });
-  });
+      return;
+    }
 
-  editorContent
-    .querySelectorAll("[data-delete-event]")
-    .forEach((button) => {
-      button.addEventListener("click", () => {
-        const confirmed = window.confirm("¿Eliminar este evento?");
+    eventsList.innerHTML = events
+      .map(
+        (eventItem, index) => `
+          <article class="event-admin-card">
+            <div class="event-admin-number">
+              ${index + 1}
+            </div>
 
-        if (!confirmed) return;
+            <div class="event-admin-info">
+              <p class="event-admin-date">
+                ${
+                  eventItem.event_date
+                    ? escapeHtml(eventItem.event_date)
+                    : "Sin fecha"
+                }
+              </p>
 
-        const updatedEvents = readLocalEvents().filter(
-          (event) => event.id !== button.dataset.deleteEvent
-        );
+              <h3>${escapeHtml(eventItem.title)}</h3>
 
-        saveLocalEvents(updatedEvents);
-        showToast("✓ Evento eliminado");
-        showCollectionEvents(collection);
+              <p>
+                ${escapeHtml(
+                  [eventItem.venue, eventItem.city]
+                    .filter(Boolean)
+                    .join(" · ") || "Sin lugar"
+                )}
+              </p>
+            </div>
+
+            <div class="event-admin-actions">
+              <button
+                type="button"
+                data-open-event="${escapeHtml(eventItem.id)}"
+              >
+                Abrir
+              </button>
+
+              <button
+                type="button"
+                data-edit-event="${escapeHtml(eventItem.id)}"
+              >
+                Editar
+              </button>
+
+              <button
+                class="danger-action"
+                type="button"
+                data-delete-event="${escapeHtml(eventItem.id)}"
+              >
+                Eliminar
+              </button>
+            </div>
+          </article>
+        `
+      )
+      .join("");
+
+    editorContent
+      .querySelectorAll("[data-open-event]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          const eventToOpen = events.find(
+            (eventItem) =>
+              eventItem.id === button.dataset.openEvent
+          );
+
+          if (!eventToOpen) return;
+
+          showEventPreview(
+            collectionItem,
+            eventToOpen
+          );
+        });
       });
-    });
+
+    editorContent
+      .querySelectorAll("[data-edit-event]")
+      .forEach((button) => {
+        button.addEventListener("click", () => {
+          const eventToEdit = events.find(
+            (eventItem) =>
+              eventItem.id === button.dataset.editEvent
+          );
+
+          if (!eventToEdit) return;
+
+          showEventForm(
+            collectionItem,
+            eventToEdit
+          );
+        });
+      });
+
+    editorContent
+      .querySelectorAll("[data-delete-event]")
+      .forEach((button) => {
+        button.addEventListener("click", async () => {
+          const confirmed = window.confirm(
+            "¿Eliminar este evento?"
+          );
+
+          if (!confirmed) return;
+
+          try {
+            await deleteDoc(
+              doc(
+                db,
+                "portfolioEvents",
+                button.dataset.deleteEvent
+              )
+            );
+
+            showToast("✓ Evento eliminado");
+
+            await showCollectionEvents(
+              collectionItem
+            );
+          } catch (error) {
+            console.error(
+              "Event deletion failed:",
+              error
+            );
+
+            showToast(
+              "No se pudo eliminar el evento."
+            );
+          }
+        });
+      });
+  } catch (error) {
+    console.error(
+      "Could not load collection events:",
+      error
+    );
+
+    const eventsList = editorContent.querySelector(
+      ".events-admin-list"
+    );
+
+    if (eventsList) {
+      eventsList.innerHTML = `
+        <div class="editor-empty">
+          <p>No se pudieron cargar los eventos.</p>
+        </div>
+      `;
+    }
+  }
 }
 function showEventPreview(collection, event) {
   const formattedDate = event.event_date
@@ -1123,7 +1199,7 @@ document
 
  document
   .getElementById("eventForm")
-  ?.addEventListener("submit", (event) => {
+  ?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const form = event.currentTarget;
@@ -1168,59 +1244,48 @@ document
     }
 
     try {
-      const events = readLocalEvents();
+  const eventData = {
+    collection_id: collection.id,
+    title,
+    event_date: eventDate || null,
+    venue: venue || null,
+    city: city || null,
+    story: story || null,
+    cover_image: selectedCoverImage,
+    gallery: selectedGalleryImages,
+  };
 
-      if (editing) {
-        const eventIndex = events.findIndex(
-          (item) => item.id === eventToEdit.id
-        );
+  if (editing) {
+    await updateDoc(
+      doc(db, "portfolioEvents", eventToEdit.id),
+      eventData
+    );
 
-        if (eventIndex === -1) {
-          throw new Error(
-            "No se encontró el evento."
-          );
-        }
+    showToast("✓ Cambios guardados");
+  } else {
+    const existingEventsQuery = query(
+      collection(db, "portfolioEvents"),
+      where("collection_id", "==", collection.id)
+    );
 
-        events[eventIndex] = {
-          ...events[eventIndex],
-          title,
-          event_date: eventDate || null,
-          venue: venue || null,
-          city: city || null,
-          story: story || null,
-          cover_image: selectedCoverImage,
-          gallery: selectedGalleryImages,
-        };
+    const existingEventsSnapshot = await getDocs(
+      existingEventsQuery
+    );
 
-        saveLocalEvents(events);
-        showToast("✓ Cambios guardados");
-      } else {
-        const collectionEvents = events.filter(
-          (item) =>
-            item.collection_id === collection.id
-        );
-
-        const newEvent = {
-          id: createLocalId(),
-          collection_id: collection.id,
-          created_at: new Date().toISOString(),
-          title,
-          event_date: eventDate || null,
-          venue: venue || null,
-          city: city || null,
-          story: story || null,
-          cover_image: selectedCoverImage,
-          gallery: selectedGalleryImages,
-          videos: [],
-          display_order: collectionEvents.length,
-        };
-
-        events.push(newEvent);
-        saveLocalEvents(events);
-        showToast("✓ Evento guardado");
+    await addDoc(
+      collection(db, "portfolioEvents"),
+      {
+        ...eventData,
+        videos: [],
+        display_order: existingEventsSnapshot.size,
+        created_at: serverTimestamp(),
       }
+    );
 
-      showCollectionEvents(collection);
+    showToast("✓ Evento guardado");
+  }
+
+  await showCollectionEvents(collection);
     } catch (error) {
       console.error("Event save failed:", error);
 
