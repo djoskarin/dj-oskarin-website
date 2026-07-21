@@ -1167,7 +1167,7 @@ renderGalleryPreview();
 
 document
   .getElementById("eventCoverInput")
-  ?.addEventListener("change", (event) => {
+  ?.addEventListener("change", async (event) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
@@ -1177,12 +1177,40 @@ document
       return;
     }
 
-    const reader = new FileReader();
+    try {
+      showToast("Subiendo foto principal...");
 
-    reader.addEventListener("load", () => {
-      selectedCoverImage = reader.result;
+      const formData = new FormData();
 
-      const preview = document.getElementById("eventCoverPreview");
+      formData.append("file", file);
+      formData.append(
+        "upload_preset",
+        "dj_oskarin_gallery"
+      );
+      formData.append(
+        "folder",
+        "dj-oskarin/events"
+      );
+
+      const response = await fetch(
+        "https://api.cloudinary.com/v1_1/xl0azxka/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Cloudinary upload failed.");
+      }
+
+      const uploadedImage = await response.json();
+
+      selectedCoverImage = uploadedImage.secure_url;
+
+      const preview = document.getElementById(
+        "eventCoverPreview"
+      );
 
       if (preview) {
         preview.innerHTML = `
@@ -1192,9 +1220,20 @@ document
           />
         `;
       }
-    });
 
-    reader.readAsDataURL(file);
+      showToast("✓ Foto principal subida");
+    } catch (error) {
+      console.error(
+        "Cover photo upload failed:",
+        error
+      );
+
+      showToast(
+        "No se pudo subir la foto principal."
+      );
+    }
+
+    event.target.value = "";
   });
 
  document
