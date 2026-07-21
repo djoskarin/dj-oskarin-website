@@ -485,6 +485,36 @@ ${
       </section>
     `
     : ""
+}${
+  videoCount
+    ? `
+      <section class="public-event-videos">
+        <div class="public-event-gallery-heading">
+          <p class="portfolio-eyebrow">Videos</p>
+          <h3>${videoCount} videos</h3>
+        </div>
+
+        <div class="public-event-videos-grid">
+          ${event.videos
+            .map(
+              (video) => `
+                <a
+                  class="public-event-video-card"
+                  href="${escapeHtml(video.url)}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <span>▶</span>
+
+                  <p>${escapeHtml(video.title)}</p>
+                </a>
+              `
+            )
+            .join("")}
+        </div>
+      </section>
+    `
+    : ""
 }
       <div class="event-preview-sections">
         <div>

@@ -1023,13 +1023,17 @@ function showEventForm(collectionItem, eventToEdit = null) {
       </p>
     </div>
 
-    <button
-      class="event-upload-placeholder"
-      id="addEventVideoButton"
-      type="button"
-    >
-      Agregar video
-    </button>
+    <label class="event-upload-placeholder">
+  Agregar videos
+
+  <input
+    id="eventVideoInput"
+    type="file"
+    accept="video/*"
+    multiple
+    hidden
+  />
+</label>
   </div>
 
   <div id="eventVideosList"></div>
@@ -1062,6 +1066,133 @@ let selectedCoverImage =
   editing && Array.isArray(eventToEdit.gallery)
     ? [...eventToEdit.gallery]
     : [];
+    let selectedEventVideos =
+  editing && Array.isArray(eventToEdit.videos)
+    ? [...eventToEdit.videos]
+    : [];
+
+function renderEventVideos() {
+  const videosList = document.getElementById(
+    "eventVideosList"
+  );
+
+  if (!videosList) return;
+
+  if (!selectedEventVideos.length) {
+    videosList.innerHTML = `
+      <p>Todavía no has agregado videos.</p>
+    `;
+    return;
+  }
+
+  videosList.innerHTML = selectedEventVideos
+    .map(
+      (video, index) => `
+        <div class="event-video-admin-item">
+          <div>
+            <strong>
+              ${escapeHtml(video.title || `Video ${index + 1}`)}
+            </strong>
+
+            <p>
+              ${escapeHtml(video.url || "")}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            data-remove-event-video="${index}"
+          >
+            Eliminar
+          </button>
+        </div>
+      `
+    )
+    .join("");
+
+  videosList
+    .querySelectorAll("[data-remove-event-video]")
+    .forEach((button) => {
+      button.addEventListener("click", () => {
+        selectedEventVideos.splice(
+          Number(button.dataset.removeEventVideo),
+          1
+        );
+
+        renderEventVideos();
+      });
+    });
+}
+
+document
+  .getElementById("eventVideoInput")
+  ?.addEventListener("change", async (event) => {
+    const files = Array.from(
+      event.target.files || []
+    ).filter((file) =>
+      file.type.startsWith("video/")
+    );
+
+    if (!files.length) return;
+
+    showToast("Subiendo videos...");
+
+    for (const file of files) {
+      try {
+        const formData = new FormData();
+
+        formData.append("file", file);
+        formData.append(
+          "upload_preset",
+          "dj_oskarin_gallery"
+        );
+        formData.append(
+          "folder",
+          "dj-oskarin/events/videos"
+        );
+
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/xl0azxka/video/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(
+            "Cloudinary video upload failed."
+          );
+        }
+
+        const uploadedVideo =
+          await response.json();
+
+        selectedEventVideos.push({
+          title:
+            file.name.replace(/\.[^/.]+$/, "") ||
+            "Video",
+          url: uploadedVideo.secure_url,
+        });
+
+        renderEventVideos();
+      } catch (error) {
+        console.error(
+          "Video upload failed:",
+          error
+        );
+
+        showToast(
+          "No se pudo subir un video."
+        );
+      }
+    }
+
+    event.target.value = "";
+    showToast("✓ Videos subidos");
+  });
+
+renderEventVideos();
 
 function renderGalleryPreview() {
   const preview = document.getElementById("eventGalleryPreview");
@@ -1292,6 +1423,7 @@ document
     story: story || null,
     cover_image: selectedCoverImage,
     gallery: selectedGalleryImages,
+    videos: selectedEventVideos,
   };
 
   if (editing) {
@@ -1315,7 +1447,6 @@ document
       collection(db, "portfolioEvents"),
       {
         ...eventData,
-        videos: [],
         display_order: existingEventsSnapshot.size,
         created_at: serverTimestamp(),
       }
