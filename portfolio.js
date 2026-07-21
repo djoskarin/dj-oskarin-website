@@ -1,3 +1,10 @@
+import { db } from "./firebase.js";
+
+import {
+  collection,
+  getDocs,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
 "use strict";
 
 const COLLECTIONS_STORAGE_KEY = "djOskarinCollections";
@@ -68,41 +75,71 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function readCollections() {
-  try {
-    const collections = JSON.parse(
-      localStorage.getItem(COLLECTIONS_STORAGE_KEY) || "[]"
-    );
+let savedCollections = [];
+let savedEvents = [];
 
-    return Array.isArray(collections)
-      ? collections
-          .filter((collection) => collection.is_visible !== false)
-          .sort(
-            (a, b) =>
-              Number(a.display_order || 0) -
-              Number(b.display_order || 0)
-          )
-      : [];
-  } catch {
-    return [];
-  }
+function readCollections() {
+  return savedCollections;
 }
 
 function readEvents() {
+  return savedEvents;
+}
+
+async function loadPublicPortfolio() {
+  publicCollections.innerHTML = `
+    <div class="portfolio-empty-state">
+      <p>Cargando colecciones...</p>
+    </div>
+  `;
+
   try {
-    const events = JSON.parse(
-      localStorage.getItem(EVENTS_STORAGE_KEY) || "[]"
+    const collectionsSnapshot = await getDocs(
+      collection(db, "portfolioCollections")
     );
 
-    return Array.isArray(events)
-      ? events.sort(
-          (a, b) =>
-            Number(a.display_order || 0) -
-            Number(b.display_order || 0)
-        )
-      : [];
-  } catch {
-    return [];
+    savedCollections = collectionsSnapshot.docs
+      .map((collectionDocument) => ({
+        id: collectionDocument.id,
+        ...collectionDocument.data(),
+      }))
+      .filter(
+        (collectionItem) =>
+          collectionItem.is_visible !== false
+      )
+      .sort(
+        (a, b) =>
+          Number(a.display_order || 0) -
+          Number(b.display_order || 0)
+      );
+
+    const eventsSnapshot = await getDocs(
+      collection(db, "portfolioEvents")
+    );
+
+    savedEvents = eventsSnapshot.docs
+      .map((eventDocument) => ({
+        id: eventDocument.id,
+        ...eventDocument.data(),
+      }))
+      .sort(
+        (a, b) =>
+          Number(a.display_order || 0) -
+          Number(b.display_order || 0)
+      );
+
+    renderCollections();
+  } catch (error) {
+    console.error(
+      "Could not load public portfolio:",
+      error
+    );
+
+    publicCollections.innerHTML = `
+      <div class="portfolio-empty-state">
+        <p>No se pudieron cargar las colecciones.</p>
+      </div>
+    `;
   }
 }
 
@@ -559,4 +596,4 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-renderCollections();
+loadPublicPortfolio();
