@@ -483,9 +483,10 @@ ${
             .join("")}
         </div>
       </section>
-    `
+        `
     : ""
-}${
+}
+${
   videoCount
     ? `
       <section class="public-event-videos">
@@ -498,16 +499,22 @@ ${
           ${event.videos
             .map(
               (video) => `
-                <a
-                  class="public-event-video-card"
-                  href="${escapeHtml(video.url)}"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <span>▶</span>
+                <article class="public-event-video-card">
+                  <video
+                    controls
+                    playsinline
+                    preload="metadata"
+                  >
+                    <source
+                      src="${escapeHtml(video.url)}"
+                    />
+                    Tu navegador no puede reproducir este video.
+                  </video>
 
-                  <p>${escapeHtml(video.title)}</p>
-                </a>
+                  <p>
+                    ${escapeHtml(video.title || "Video")}
+                  </p>
+                </article>
               `
             )
             .join("")}
