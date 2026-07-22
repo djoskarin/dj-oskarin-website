@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Videos — DJ Oskarin</title>
+
+  <link rel="stylesheet" href="portfolio.css" />
+  <link rel="stylesheet" href="videos.css" />
+</head>
+
+<body class="portfolio-page">
+  <header class="portfolio-header">
+    <a class="portfolio-logo" href="index.html">
+      DJ OSKARIN
+    </a>
+
+    <nav class="portfolio-nav" aria-label="Portfolio navigation">
+      <a href="index.html">Inicio</a>
+      <a href="#collections">Colecciones</a>
+      <a href="tel:+19564352725">Línea directa</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="videos-page-section">
+  <div class="videos-page-header">
+    <p class="section-label">Videos</p>
+    <h1>Revive los mejores momentos.</h1>
+    <p>Una colección de momentos capturados en cada evento.</p>
+  </div>
+
+  <div class="public-videos-grid" id="publicVideos"></div>
+
+  <p class="videos-empty-message" id="videosEmptyMessage" hidden>
+    Próximamente habrá nuevos videos.
+  </p>
+</section>
+</main>
+
+  <footer class="portfolio-footer">
+    <p>DJ Oskarin</p>
+
+    <a href="tel:+19564352725">
+      Línea directa
+    </a>
+  </footer>
+<div
+  class="gallery-lightbox"
+  id="galleryLightbox"
+  aria-hidden="true"
+>
+  <button
+    class="gallery-lightbox-close"
+    id="galleryLightboxClose"
+    type="button"
+    aria-label="Cerrar foto"
+  >
+    ×
+  </button>
+
+  <button
+    class="gallery-lightbox-arrow gallery-lightbox-prev"
+    id="galleryLightboxPrev"
+    type="button"
+    aria-label="Foto anterior"
+  >
+    ←
+  </button>
+
+  <img
+    id="galleryLightboxImage"
+    src=""
+    alt=""
+  />
+
+  <button
+    class="gallery-lightbox-arrow gallery-lightbox-next"
+    id="galleryLightboxNext"
+    type="button"
+    aria-label="Foto siguiente"
+  >
+    →
+  </button>
+
+  <p class="gallery-lightbox-count" id="galleryLightboxCount"></p>
+</div>
+
+  <script type="module" src="videos.js"></script>
+</body>
+</html>
