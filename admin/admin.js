@@ -2066,9 +2066,9 @@ function showPackagesManager() {
 function openPlaceholderSection(sectionName) {
   const information = {
     videos: [
-      "Videos",
-      "Aquí podrás agregar enlaces privados o no listados.",
-    ],
+  "Videos",
+  "Administra todos los videos públicos de tu portafolio.",
+],
     galeria: [
       "Galería",
       "Aquí podrás administrar las fotografías generales.",
@@ -2101,6 +2101,205 @@ function openPlaceholderSection(sectionName) {
 
   openEditor();
 }
+async function showVideosManager() {
+  editorContent.innerHTML = `
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Videos</h3>
+
+          <p class="packages-manager-description">
+            Sube videos para tu página principal.
+          </p>
+        </div>
+
+        <label class="editor-action">
+          Agregar video
+
+          <input
+            id="addPublicVideoInput"
+            type="file"
+            accept="video/*"
+            hidden
+          />
+        </label>
+      </div>
+
+      <div class="packages-admin-grid" id="videosAdminGrid">
+        <div class="editor-empty">
+          <p>Cargando videos...</p>
+        </div>
+      </div>
+    </section>
+  `;
+
+  document
+    .getElementById("addPublicVideoInput")
+    ?.addEventListener("change", async (event) => {
+      const file = event.target.files?.[0];
+
+      if (!file || !file.type.startsWith("video/")) {
+        return;
+      }
+
+      try {
+        showToast("Subiendo video...");
+
+        const formData = new FormData();
+
+        formData.append("file", file);
+        formData.append(
+          "upload_preset",
+          "dj_oskarin_gallery"
+        );
+        formData.append(
+          "folder",
+          "dj-oskarin/public-videos"
+        );
+
+        const response = await fetch(
+          "https://api.cloudinary.com/v1_1/xl0azxka/video/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Cloudinary video upload failed.");
+        }
+
+        const uploadedVideo = await response.json();
+
+        await addDoc(collection(db, "publicVideos"), {
+          title:
+            file.name.replace(/\.[^/.]+$/, "") ||
+            "Video",
+          url: uploadedVideo.secure_url,
+          public_id: uploadedVideo.public_id,
+          display_order: Date.now(),
+          visible: true,
+          created_at: serverTimestamp(),
+        });
+
+        showToast("✓ Video agregado");
+        await showVideosManager();
+      } catch (error) {
+        console.error("Public video upload failed:", error);
+        showToast("No se pudo subir el video.");
+      }
+
+      event.target.value = "";
+    });
+
+  const videosGrid =
+    document.getElementById("videosAdminGrid");
+
+  try {
+    const videosQuery = query(
+      collection(db, "publicVideos"),
+      orderBy("display_order", "asc")
+    );
+
+    const snapshot = await getDocs(videosQuery);
+
+    if (snapshot.empty) {
+      videosGrid.innerHTML = `
+        <div class="editor-empty">
+          <h3>Todavía no hay videos</h3>
+          <p>Presiona Agregar video para subir el primero.</p>
+        </div>
+      `;
+
+      return;
+    }
+
+    videosGrid.innerHTML = snapshot.docs
+      .map((videoDoc, index) => {
+        const video = videoDoc.data();
+
+        return `
+          <article class="packages-admin-card">
+            <p class="eyebrow">
+              Video ${String(index + 1).padStart(2, "0")}
+            </p>
+
+            <video
+              controls
+              playsinline
+              preload="metadata"
+              style="
+                width: 100%;
+                aspect-ratio: 16 / 9;
+                object-fit: cover;
+                background: #000;
+                margin-bottom: 20px;
+              "
+            >
+              <source src="${escapeHtml(video.url)}" />
+            </video>
+
+            <h5>${escapeHtml(video.title || "Video")}</h5>
+
+            <button
+              class="danger-action"
+              type="button"
+              data-delete-public-video="${escapeHtml(videoDoc.id)}"
+            >
+              Eliminar
+            </button>
+          </article>
+        `;
+      })
+      .join("");
+
+    videosGrid
+      .querySelectorAll("[data-delete-public-video]")
+      .forEach((button) => {
+        button.addEventListener("click", async () => {
+          const confirmed = window.confirm(
+            "¿Eliminar este video?"
+          );
+
+          if (!confirmed) return;
+
+          try {
+            await deleteDoc(
+              doc(
+                db,
+                "publicVideos",
+                button.dataset.deletePublicVideo
+              )
+            );
+
+            showToast("✓ Video eliminado");
+            await showVideosManager();
+          } catch (error) {
+            console.error(
+              "Public video deletion failed:",
+              error
+            );
+
+            showToast(
+              "No se pudo eliminar el video."
+            );
+          }
+        });
+      });
+  } catch (error) {
+    console.error(
+      "Could not load public videos:",
+      error
+    );
+
+    videosGrid.innerHTML = `
+      <div class="editor-empty">
+        <p>No se pudieron cargar los videos.</p>
+      </div>
+    `;
+  }
+}
 
 dashboardCards.forEach((card) => {
   card.addEventListener("click", async () => {
@@ -2124,6 +2323,13 @@ if (sectionName === "galeria") {
   editorTitle.textContent = "Galería";
   openEditor();
   showGalleryManager();
+  return;
+}
+
+if (sectionName === "videos") {
+  editorTitle.textContent = "Videos";
+  openEditor();
+  showVideosManager();
   return;
 }
 
