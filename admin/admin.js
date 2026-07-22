@@ -2240,7 +2240,21 @@ async function showVideosManager() {
               <source src="${escapeHtml(video.url)}" />
             </video>
 
-            <h5>${escapeHtml(video.title || "Video")}</h5>
+            <input
+  class="public-video-title-input"
+  type="text"
+  value="${escapeHtml(video.title || "")}"
+  placeholder="Título del video"
+  data-video-title="${escapeHtml(videoDoc.id)}"
+/>
+
+<button
+  class="editor-action save-public-video-title"
+  type="button"
+  data-save-video-title="${escapeHtml(videoDoc.id)}"
+>
+  Guardar título
+</button>
 
             <button
   class="public-video-delete-button"
@@ -2255,6 +2269,39 @@ async function showVideosManager() {
       .join("");
 
     videosGrid
+  .querySelectorAll("[data-save-video-title]")
+  .forEach((button) => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.saveVideoTitle;
+
+      const input = videosGrid.querySelector(
+        `[data-video-title="${id}"]`
+      );
+
+      if (!input) return;
+
+      try {
+        await updateDoc(
+          doc(db, "publicVideos", id),
+          {
+            title: input.value.trim() || "Video",
+          }
+        );
+
+        showToast("✓ Título guardado");
+      } catch (error) {
+        console.error(
+          "Could not save video title:",
+          error
+        );
+
+        showToast(
+          "No se pudo guardar el título."
+        );
+      }
+    });
+  });
+  videosGrid
       .querySelectorAll("[data-delete-public-video]")
       .forEach((button) => {
         button.addEventListener("click", async () => {
