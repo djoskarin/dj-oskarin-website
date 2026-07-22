@@ -956,3 +956,27 @@ a {
     grid-template-columns: 1fr;
   }
 }
+.public-video-delete-button {
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background 180ms ease,
+    color 180ms ease,
+    border-color 180ms ease;
+}
+
+.public-video-delete-button:hover {
+  border-color: #ffffff;
+  background: #ffffff;
+  color: #000000;
+}

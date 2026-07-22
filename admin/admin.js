@@ -2243,12 +2243,12 @@ async function showVideosManager() {
             <h5>${escapeHtml(video.title || "Video")}</h5>
 
             <button
-              class="danger-action"
-              type="button"
-              data-delete-public-video="${escapeHtml(videoDoc.id)}"
-            >
-              Eliminar
-            </button>
+  class="public-video-delete-button"
+  type="button"
+  data-delete-public-video="${escapeHtml(videoDoc.id)}"
+>
+  Eliminar video
+</button>
           </article>
         `;
       })
