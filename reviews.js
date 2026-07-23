@@ -10,7 +10,9 @@ import {
 async function loadReviews() {
   const reviewsContainer = document.getElementById("reviewsContainer");
 
-  if (!reviewsContainer) return;
+  if (!reviewsContainer) {
+  return;
+}
 
   reviewsContainer.innerHTML = "<p>Cargando reseñas...</p>";
 
