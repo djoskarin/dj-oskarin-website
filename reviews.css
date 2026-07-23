@@ -1,0 +1,104 @@
+body.reviews-page-body{
+    margin:0;
+    background:#050505;
+    color:#f5f5f5;
+    font-family:Inter,sans-serif;
+}
+
+.reviews-header{
+    max-width:1400px;
+    margin:auto;
+    padding:40px 60px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.reviews-brand,
+.reviews-back-link{
+    color:white;
+    text-decoration:none;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    font-size:.82rem;
+}
+
+.reviews-page{
+    max-width:1400px;
+    margin:auto;
+    padding:0 60px 100px;
+}
+
+.reviews-label{
+    color:#8f8f8f;
+    letter-spacing:.35em;
+    text-transform:uppercase;
+    margin-bottom:24px;
+}
+
+.reviews-hero h1{
+    font-family:"Cormorant Garamond",serif;
+    font-size:clamp(3rem,7vw,6rem);
+    font-weight:400;
+    line-height:.95;
+    max-width:1100px;
+    margin:0;
+}
+
+.reviews-intro{
+    max-width:650px;
+    margin-top:32px;
+    color:#9b9b9b;
+    font-size:1.1rem;
+    line-height:1.8;
+}
+
+.reviews-grid{
+    margin-top:90px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(340px,1fr));
+    gap:28px;
+}
+
+.review-card{
+    border:1px solid rgba(255,255,255,.08);
+    background:#0d0d0d;
+    padding:36px;
+    transition:.35s;
+}
+
+.review-card:hover{
+    transform:translateY(-6px);
+    border-color:rgba(255,255,255,.18);
+}
+
+.review-text{
+    font-family:"Cormorant Garamond",serif;
+    font-size:2rem;
+    line-height:1.25;
+    margin:0 0 28px;
+}
+
+.review-author{
+    color:#9b9b9b;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    font-size:.82rem;
+}
+
+@media(max-width:768px){
+
+.reviews-header,
+.reviews-page{
+padding:28px;
+}
+
+.reviews-grid{
+grid-template-columns:1fr;
+}
+
+.review-text{
+font-size:1.7rem;
+}
+
+}

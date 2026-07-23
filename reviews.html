@@ -7,23 +7,37 @@
     <title>Reseñas | DJ Oskarin</title>
 
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="reviews.css" />
   </head>
 
-  <body>
-    <main>
-      <section class="preview-section reviews-page">
-        <p class="section-label">Reseñas</p>
+  <body class="reviews-page-body">
+    <header class="reviews-header">
+      <a href="index.html" class="reviews-brand">DJ OSKARIN</a>
+
+      <a href="index.html#resenas" class="reviews-back-link">
+        Volver al inicio
+      </a>
+    </header>
+
+    <main class="reviews-page">
+      <section class="reviews-hero">
+        <p class="reviews-label">Reseñas</p>
 
         <h1>
           La mejor recomendación viene de quienes ya vivieron la experiencia.
         </h1>
 
-        <div id="reviewsContainer" class="reviews-grid"></div>
-
-        <a href="index.html#resenas" class="preview-link">
-          Volver al inicio
-        </a>
+        <p class="reviews-intro">
+          Experiencias reales de personas que confiaron en DJ Oskarin para
+          formar parte de un momento inolvidable.
+        </p>
       </section>
+
+      <section
+        id="reviewsContainer"
+        class="reviews-grid"
+        aria-live="polite"
+      ></section>
     </main>
 
     <script type="module" src="reviews.js"></script>
