@@ -1987,7 +1987,7 @@ async function showGalleryManager() {
 
         await deleteDoc(doc(db, "gallery", photoId));
 
-        await loadGalleryManager();
+        window.location.reload();
       } catch (error) {
         console.error("Could not delete gallery photo:", error);
 
