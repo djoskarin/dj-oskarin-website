@@ -1994,11 +1994,11 @@ async function showGalleryManager() {
         button.disabled = false;
         button.textContent = "Eliminar fotografía";
 
-        alert("No se pudo eliminar la fotografía.");
+        alert(`No se pudo eliminar la fotografía: ${error.message}`);
       }
     });
   });
-  
+
   } catch (error) {
     console.error("Could not load gallery:", error);
 
