@@ -152,6 +152,12 @@ function openContactModal() {
   closeMenu();
 
   contactModal.classList.add("is-open");
+
+  const contactPanel = contactModal.querySelector(".contact-panel");
+
+if (contactPanel) {
+  contactPanel.scrollTop = 0;
+}
   contactModal.setAttribute("aria-hidden", "false");
 
   updateBodyLock();
