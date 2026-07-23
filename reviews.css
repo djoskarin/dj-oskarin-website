@@ -102,3 +102,42 @@ font-size:1.7rem;
 }
 
 }
+/* ---------- Featured Review ---------- */
+
+.featured-review{
+    grid-column:1/-1;
+    padding:54px;
+    border:1px solid rgba(255,255,255,.18);
+    background:linear-gradient(180deg,#121212,#090909);
+}
+
+.review-quote{
+    display:block;
+    font-size:5rem;
+    color:rgba(255,255,255,.08);
+    line-height:1;
+    margin-bottom:18px;
+}
+
+.review-person{
+    margin-top:36px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.review-photo{
+    width:64px;
+    height:64px;
+    border-radius:50%;
+    object-fit:cover;
+    border:1px solid rgba(255,255,255,.15);
+}
+
+.review-featured-badge{
+    margin-top:6px;
+    color:#bdbdbd;
+    font-size:.75rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+}

@@ -2413,6 +2413,20 @@ async function showReviewsManager() {
           placeholder="Autor, por ejemplo: Mamá de Zoé"
         />
 
+        <input
+  id="reviewPhotoInput"
+  type="text"
+  placeholder="URL de la foto del cliente (opcional)"
+/>
+
+<label class="review-featured-label">
+  <input
+    id="reviewFeaturedInput"
+    type="checkbox"
+  />
+  ⭐ Destacar esta reseña
+</label>
+
         <button
           class="editor-action"
           id="saveReviewButton"
@@ -2442,6 +2456,12 @@ async function showReviewsManager() {
     const text = textInput?.value.trim();
     const author = authorInput?.value.trim();
 
+    const photo =
+  document.getElementById("reviewPhotoInput")?.value.trim() || "";
+
+const featured =
+  document.getElementById("reviewFeaturedInput")?.checked || false;
+
     if (!text || !author) {
       showToast("Escribe la reseña y el autor.");
       return;
@@ -2452,12 +2472,14 @@ async function showReviewsManager() {
       saveReviewButton.textContent = "Guardando...";
 
       await addDoc(collection(db, "reviews"), {
-        text,
-        author,
-        visible: true,
-        display_order: Date.now(),
-        created_at: serverTimestamp(),
-      });
+  text,
+  author,
+  photo,
+  featured,
+  visible: true,
+  display_order: Date.now(),
+  created_at: serverTimestamp(),
+});
 
       showToast("✓ Reseña agregada");
       await showReviewsManager();

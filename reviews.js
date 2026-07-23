@@ -31,19 +31,57 @@ async function loadReviews() {
 
     reviewsContainer.innerHTML = "";
 
-    snapshot.forEach((reviewDoc) => {
-      const review = reviewDoc.data();
+    const reviews = snapshot.docs.map((reviewDoc) => ({
+  id: reviewDoc.id,
+  ...reviewDoc.data(),
+}));
 
-      const reviewCard = document.createElement("article");
-      reviewCard.className = "review-card";
+reviews.sort((a, b) => {
+  if (a.featured && !b.featured) return -1;
+  if (!a.featured && b.featured) return 1;
 
-      reviewCard.innerHTML = `
-        <p class="review-text">“${review.text || ""}”</p>
+  return (b.display_order || 0) - (a.display_order || 0);
+});
+
+reviews.forEach((review) => {
+  const reviewCard = document.createElement("article");
+
+  reviewCard.className = review.featured
+    ? "review-card featured-review"
+    : "review-card";
+
+  const photoHtml = review.photo
+    ? `
+      <img
+        class="review-photo"
+        src="${review.photo}"
+        alt="${review.author || "Cliente"}"
+      />
+    `
+    : "";
+
+  reviewCard.innerHTML = `
+    <span class="review-quote">❝</span>
+
+    <p class="review-text">${review.text || ""}</p>
+
+    <div class="review-person">
+      ${photoHtml}
+
+      <div>
         <p class="review-author">— ${review.author || "Cliente"}</p>
-      `;
 
-      reviewsContainer.appendChild(reviewCard);
-    });
+        ${
+          review.featured
+            ? '<p class="review-featured-badge">Reseña destacada</p>'
+            : ""
+        }
+      </div>
+    </div>
+  `;
+
+  reviewsContainer.appendChild(reviewCard);
+});
   } catch (error) {
     console.error("Error loading reviews:", error);
     reviewsContainer.innerHTML =
