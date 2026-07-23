@@ -425,7 +425,11 @@ document.addEventListener("keydown", (event) => {
    todavía construimos sus páginas.
 ========================================================= */
 
-document.querySelectorAll('a[href="#"]').forEach((link) => {
+document
+  .querySelectorAll(
+    'a[href="#"]:not(#whatsappContact):not(#phoneContact):not(#instagramContact)'
+  )
+  .forEach((link) => {
   link.addEventListener("click", (event) => {
     event.preventDefault();
   });
