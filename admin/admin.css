@@ -365,6 +365,34 @@ a {
   color: var(--white);
 }
 
+
+#reviewTextInput,
+#reviewAuthorInput{
+  width:100%;
+  background:#0d0d0d;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.12);
+  padding:18px;
+  font:inherit;
+  outline:none;
+  box-sizing:border-box;
+}
+
+#reviewTextInput{
+  min-height:180px;
+  resize:vertical;
+}
+
+#reviewTextInput::placeholder,
+#reviewAuthorInput::placeholder{
+  color:rgba(255,255,255,.35);
+}
+
+#reviewTextInput:focus,
+#reviewAuthorInput:focus{
+  border-color:#fff;
+}
+
 @media (max-width: 760px) {
   .admin-header {
     min-height: 76px;
