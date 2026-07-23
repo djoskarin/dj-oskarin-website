@@ -17,7 +17,7 @@ async function loadReviews() {
   try {
     const reviewsQuery = query(
       collection(db, "reviews"),
-      orderBy("createdAt", "desc")
+      orderBy("created_at", "desc")
     );
 
     const snapshot = await getDocs(reviewsQuery);
