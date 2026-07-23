@@ -2417,7 +2417,7 @@ async function showReviewsManager() {
   <button
     id="uploadReviewPhotoButton"
     type="button"
-    class="secondary-button"
+    class="review-upload-button"
   >
     Subir foto del cliente
   </button>
@@ -2484,7 +2484,7 @@ async function showReviewsManager() {
     const author = authorInput?.value.trim();
 
     const photo = uploadedReviewPhoto;
-    
+
 const featured =
   document.getElementById("reviewFeaturedInput")?.checked || false;
 

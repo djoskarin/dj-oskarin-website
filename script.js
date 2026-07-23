@@ -7,8 +7,16 @@
 const CONFIG = {
   phoneNumber: "19564352725",
   instagramUrl: "https://www.instagram.com/dj.oskarin/",
-  whatsappMessage:
-    "Hola, DJ Oskarin. Encontré tu página web y me gustaría recibir información para mi evento.",
+  whatsappMessages: {
+  xv:
+    "Hola, DJ Oskarin.\n\nMe gustaría recibir información para cotizar un XV.",
+  boda:
+    "Hola, DJ Oskarin.\n\nMe gustaría recibir información para cotizar una boda.",
+  duda:
+    "Hola, DJ Oskarin.\n\nTengo una duda sobre sus servicios.",
+  otro:
+    "Hola, DJ Oskarin.\n\nQuisiera ponerme en contacto con usted.",
+},
   adminDashboardUrl: "admin/dashboard.html",
   adminVerificationUrl: "/api/verify-pin",
 };
@@ -33,6 +41,18 @@ const menuLinks = document.querySelectorAll(".menu-link");
 const contactModal = document.getElementById("contactModal");
 const contactBackdrop = document.getElementById("contactBackdrop");
 const closeContactButton = document.getElementById("closeContactButton");
+
+const contactReasonStep =
+  document.getElementById("contactReasonStep");
+
+const contactMethodStep =
+  document.getElementById("contactMethodStep");
+
+const contactBackButton =
+  document.getElementById("contactBackButton");
+
+const contactReasonButtons =
+  document.querySelectorAll(".contact-reason-option");
 
 const contactButtons = [
   document.getElementById("heroDirectLineButton"),
@@ -159,13 +179,6 @@ contactBackdrop?.addEventListener("click", closeContactModal);
 
 /* Enlaces de contacto */
 
-const encodedWhatsAppMessage = encodeURIComponent(CONFIG.whatsappMessage);
-
-if (whatsappContact) {
-  whatsappContact.href =
-    `https://wa.me/${CONFIG.phoneNumber}` +
-    `?text=${encodedWhatsAppMessage}`;
-}
 
 if (phoneContact) {
   phoneContact.href = `tel:+${CONFIG.phoneNumber}`;
@@ -174,6 +187,42 @@ if (phoneContact) {
 if (instagramContact) {
   instagramContact.href = CONFIG.instagramUrl;
 }
+let selectedContactReason = "otro";
+
+contactReasonButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    selectedContactReason =
+      button.dataset.contactReason || "otro";
+
+    const message =
+      CONFIG.whatsappMessages[selectedContactReason] ||
+      CONFIG.whatsappMessages.otro;
+
+    if (whatsappContact) {
+      whatsappContact.href =
+        `https://wa.me/${CONFIG.phoneNumber}` +
+        `?text=${encodeURIComponent(message)}`;
+    }
+
+    if (contactReasonStep) {
+      contactReasonStep.hidden = true;
+    }
+
+    if (contactMethodStep) {
+      contactMethodStep.hidden = false;
+    }
+  });
+});
+
+contactBackButton?.addEventListener("click", () => {
+  if (contactMethodStep) {
+    contactMethodStep.hidden = true;
+  }
+
+  if (contactReasonStep) {
+    contactReasonStep.hidden = false;
+  }
+});
 
 /* =========================================================
    ENTRADA SECRETA AL ADMIN

@@ -1030,3 +1030,33 @@ a {
   width:100%;
   margin-bottom:14px;
 }
+.review-upload-button{
+    width:100%;
+    border:1px solid rgba(255,255,255,.15);
+    background:#111;
+    color:#fff;
+    padding:14px 18px;
+    cursor:pointer;
+    transition:.25s;
+    font-size:.92rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+.review-upload-button:hover{
+    background:#181818;
+    border-color:rgba(255,255,255,.28);
+}
+
+.review-photo-upload{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    margin-top:16px;
+    margin-bottom:16px;
+}
+
+#reviewPhotoStatus{
+    color:#9d9d9d;
+    font-size:.85rem;
+}

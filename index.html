@@ -282,66 +282,138 @@
       ></button>
 
       <div class="contact-panel">
-        <div class="contact-panel-header">
-          <div>
-            <p class="section-label">DJ Oskarin</p>
-            <h2 id="contactModalTitle">Línea Directa</h2>
-          </div>
+        <div class="contact-panel">
+  <div class="contact-panel-header">
+    <div>
+      <p class="section-label">DJ Oskarin</p>
+      <h2 id="contactModalTitle">Línea Directa</h2>
+    </div>
 
-          <button
-            class="close-contact-button"
-            id="closeContactButton"
-            type="button"
-            aria-label="Cerrar"
-          >
-            ×
-          </button>
-        </div>
+    <button
+      class="close-contact-button"
+      id="closeContactButton"
+      type="button"
+      aria-label="Cerrar"
+    >
+      ×
+    </button>
+  </div>
 
-        <p class="contact-introduction">
-          Elige cómo prefieres comunicarte.
-        </p>
+  <div id="contactReasonStep">
+    <p class="contact-introduction">
+      ¿Cómo podemos ayudarte?
+    </p>
 
-        <div class="contact-options">
-          <a
-            class="contact-option"
-            id="whatsappContact"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>
-              <strong>WhatsApp</strong>
-              <small>La forma más rápida de recibir una respuesta.</small>
-            </span>
+    <div class="contact-options">
+      <button
+        class="contact-option contact-reason-option"
+        type="button"
+        data-contact-reason="xv"
+      >
+        <span>
+          <strong>Cotizar un XV</strong>
+          <small>Planeemos una celebración inolvidable.</small>
+        </span>
 
-            <span aria-hidden="true">↗</span>
-          </a>
+        <span aria-hidden="true">→</span>
+      </button>
 
-          <a class="contact-option" id="phoneContact" href="#">
-            <span>
-              <strong>Llamada telefónica</strong>
-              <small>Hablemos directamente sobre tu evento.</small>
-            </span>
+      <button
+        class="contact-option contact-reason-option"
+        type="button"
+        data-contact-reason="boda"
+      >
+        <span>
+          <strong>Cotizar una boda</strong>
+          <small>Elegancia y la música perfecta para su gran día.</small>
+        </span>
 
-            <span aria-hidden="true">↗</span>
-          </a>
+        <span aria-hidden="true">→</span>
+      </button>
 
-          <a
-            class="contact-option"
-            id="instagramContact"
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>
-              <strong>Instagram</strong>
-              <small>Conoce más contenido y envíame un mensaje.</small>
-            </span>
+      <button
+        class="contact-option contact-reason-option"
+        type="button"
+        data-contact-reason="duda"
+      >
+        <span>
+          <strong>Tengo una duda</strong>
+          <small>Con gusto responderé cualquier pregunta.</small>
+        </span>
 
-            <span aria-hidden="true">↗</span>
-          </a>
-        </div>
+        <span aria-hidden="true">→</span>
+      </button>
+
+      <button
+        class="contact-option contact-reason-option"
+        type="button"
+        data-contact-reason="otro"
+      >
+        <span>
+          <strong>Otro asunto</strong>
+          <small>Cuéntame en qué puedo ayudarte.</small>
+        </span>
+
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="contactMethodStep" hidden>
+    <button
+      id="contactBackButton"
+      class="contact-step-back"
+      type="button"
+    >
+      ← Regresar
+    </button>
+
+    <p class="contact-introduction">
+      ¿Cómo prefieres comunicarte?
+    </p>
+
+    <div class="contact-options">
+      <a
+        class="contact-option"
+        id="whatsappContact"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>
+          <strong>WhatsApp</strong>
+          <small>La forma más rápida de recibir una respuesta.</small>
+        </span>
+
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <a class="contact-option" id="phoneContact" href="#">
+        <span>
+          <strong>Llamada telefónica</strong>
+          <small>Hablemos directamente sobre tu evento.</small>
+        </span>
+
+        <span aria-hidden="true">↗</span>
+      </a>
+
+      <a
+        class="contact-option"
+        id="instagramContact"
+        href="#"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>
+          <strong>Instagram</strong>
+          <small>Conoce más contenido y envíame un mensaje.</small>
+        </span>
+
+        <span aria-hidden="true">↗</span>
+      </a>
+    </div>
+  </div>
+</div>
       </div>
     </div>
 
