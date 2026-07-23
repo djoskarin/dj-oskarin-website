@@ -2413,11 +2413,19 @@ async function showReviewsManager() {
           placeholder="Autor, por ejemplo: Mamá de Zoé"
         />
 
-        <input
-  id="reviewPhotoInput"
-  type="text"
-  placeholder="URL de la foto del cliente (opcional)"
-/>
+        <div class="review-photo-upload">
+  <button
+    id="uploadReviewPhotoButton"
+    type="button"
+    class="secondary-button"
+  >
+    Subir foto del cliente
+  </button>
+
+  <span id="reviewPhotoStatus">
+    Sin foto
+  </span>
+</div>
 
 <label class="review-featured-label">
   <input
@@ -2446,6 +2454,25 @@ async function showReviewsManager() {
     const saveReviewButton =
     document.getElementById("saveReviewButton");
 
+    let uploadedReviewPhoto = "";
+
+  document
+  .getElementById("uploadReviewPhotoButton")
+  ?.addEventListener("click", () => {
+    openCloudinaryUpload((uploadedImage) => {
+      uploadedReviewPhoto = uploadedImage.secure_url;
+
+      const status =
+        document.getElementById("reviewPhotoStatus");
+
+      if (status) {
+        status.textContent = "✓ Foto subida";
+      }
+
+      showToast("Foto del cliente agregada.");
+    });
+  });
+  
   saveReviewButton?.addEventListener("click", async () => {
     const textInput =
       document.getElementById("reviewTextInput");
@@ -2456,9 +2483,8 @@ async function showReviewsManager() {
     const text = textInput?.value.trim();
     const author = authorInput?.value.trim();
 
-    const photo =
-  document.getElementById("reviewPhotoInput")?.value.trim() || "";
-
+    const photo = uploadedReviewPhoto;
+    
 const featured =
   document.getElementById("reviewFeaturedInput")?.checked || false;
 
