@@ -21,6 +21,8 @@ const body = document.body;
 
 const loadingScreen = document.getElementById("loadingScreen");
 
+const siteHeader = document.querySelector("header");
+
 const brandTrigger = document.getElementById("brandTrigger");
 
 const fullscreenMenu = document.getElementById("fullscreenMenu");
