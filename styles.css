@@ -1212,3 +1212,15 @@ body.page-ready .scroll-indicator {
   object-fit: cover;
   object-position: 50% 30%;
 }
+/* Fix Línea Directa panel */
+
+.contact-panel {
+  height: 92svh;
+  max-height: none;
+  box-sizing: border-box;
+}
+
+#contactReasonStep[hidden],
+#contactMethodStep[hidden] {
+  display: none !important;
+}
