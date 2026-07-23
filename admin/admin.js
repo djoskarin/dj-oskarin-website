@@ -1954,12 +1954,51 @@ async function showGalleryManager() {
             />
 
             <p>
-              Orden: ${Number(photo.order) || index + 1}
-            </p>
+  Orden: ${Number(photo.order) || index + 1}
+</p>
+
+<button
+  class="gallery-delete-button"
+  type="button"
+  data-photo-id="${photoDoc.id}"
+>
+  Eliminar fotografía
+</button>
           </article>
         `;
       })
       .join("");
+
+      galleryGrid
+  .querySelectorAll(".gallery-delete-button")
+  .forEach((button) => {
+    button.addEventListener("click", async () => {
+      const photoId = button.dataset.photoId;
+
+      const confirmed = window.confirm(
+        "¿Seguro que quieres eliminar esta fotografía?"
+      );
+
+      if (!confirmed) return;
+
+      try {
+        button.disabled = true;
+        button.textContent = "Eliminando...";
+
+        await deleteDoc(doc(db, "gallery", photoId));
+
+        await loadGalleryManager();
+      } catch (error) {
+        console.error("Could not delete gallery photo:", error);
+
+        button.disabled = false;
+        button.textContent = "Eliminar fotografía";
+
+        alert("No se pudo eliminar la fotografía.");
+      }
+    });
+  });
+  
   } catch (error) {
     console.error("Could not load gallery:", error);
 
