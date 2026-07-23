@@ -2386,6 +2386,179 @@ async function showVideosManager() {
     `;
   }
 }
+async function showReviewsManager() {
+  editorContent.innerHTML = `
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Reseñas</h3>
+
+          <p class="packages-manager-description">
+            Publica opiniones de clientes para mostrarlas en tu página.
+          </p>
+        </div>
+      </div>
+
+      <div class="packages-admin-card">
+        <textarea
+          id="reviewTextInput"
+          placeholder="Escribe la reseña..."
+          rows="5"
+        ></textarea>
+
+        <input
+          id="reviewAuthorInput"
+          type="text"
+          placeholder="Autor, por ejemplo: Mamá de Zoé"
+        />
+
+        <button
+          class="editor-action"
+          id="saveReviewButton"
+          type="button"
+        >
+          Agregar reseña
+        </button>
+      </div>
+
+      <div class="packages-admin-grid" id="reviewsAdminGrid">
+        <div class="editor-empty">
+          <p>Cargando reseñas...</p>
+        </div>
+      </div>
+    </section>
+  `;
+    const saveReviewButton =
+    document.getElementById("saveReviewButton");
+
+  saveReviewButton?.addEventListener("click", async () => {
+    const textInput =
+      document.getElementById("reviewTextInput");
+
+    const authorInput =
+      document.getElementById("reviewAuthorInput");
+
+    const text = textInput?.value.trim();
+    const author = authorInput?.value.trim();
+
+    if (!text || !author) {
+      showToast("Escribe la reseña y el autor.");
+      return;
+    }
+
+    try {
+      saveReviewButton.disabled = true;
+      saveReviewButton.textContent = "Guardando...";
+
+      await addDoc(collection(db, "reviews"), {
+        text,
+        author,
+        visible: true,
+        display_order: Date.now(),
+        created_at: serverTimestamp(),
+      });
+
+      showToast("✓ Reseña agregada");
+      await showReviewsManager();
+    } catch (error) {
+      console.error("Could not save review:", error);
+
+      saveReviewButton.disabled = false;
+      saveReviewButton.textContent = "Agregar reseña";
+
+      showToast("No se pudo guardar la reseña.");
+    }
+      });
+
+    const reviewsGrid =
+  document.getElementById("reviewsAdminGrid");
+
+try {
+  const reviewsQuery = query(
+    collection(db, "reviews"),
+    orderBy("display_order", "asc")
+  );
+
+  const snapshot = await getDocs(reviewsQuery);
+
+  if (snapshot.empty) {
+    reviewsGrid.innerHTML = `
+      <div class="editor-empty">
+        <h3>Todavía no hay reseñas</h3>
+        <p>Agrega la primera reseña arriba.</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  reviewsGrid.innerHTML = snapshot.docs
+    .map((reviewDoc, index) => {
+      const review = reviewDoc.data();
+
+      return `
+        <article class="packages-admin-card">
+          <p class="eyebrow">
+            Reseña ${String(index + 1).padStart(2, "0")}
+          </p>
+
+          <p>${escapeHtml(review.text || "")}</p>
+
+          <p>
+            — ${escapeHtml(review.author || "Sin autor")}
+          </p>
+          <button
+  class="review-delete-button"
+  type="button"
+  data-review-id="${escapeHtml(reviewDoc.id)}"
+>
+  Eliminar reseña
+</button>
+        </article>
+      `;
+    })
+    .join("");
+    reviewsGrid
+  .querySelectorAll(".review-delete-button")
+  .forEach((button) => {
+    button.addEventListener("click", async () => {
+      const reviewId = button.dataset.reviewId;
+
+      const confirmed = window.confirm(
+        "¿Seguro que quieres eliminar esta reseña?"
+      );
+
+      if (!confirmed) return;
+
+      try {
+        button.disabled = true;
+        button.textContent = "Eliminando...";
+
+        await deleteDoc(doc(db, "reviews", reviewId));
+
+        showToast("✓ Reseña eliminada");
+        await showReviewsManager();
+      } catch (error) {
+        console.error("Could not delete review:", error);
+
+        button.disabled = false;
+        button.textContent = "Eliminar reseña";
+
+        showToast("No se pudo eliminar la reseña.");
+      }
+    });
+  });
+} catch (error) {
+  console.error("Could not load reviews:", error);
+
+  reviewsGrid.innerHTML = `
+    <div class="editor-empty">
+      <p>No se pudieron cargar las reseñas.</p>
+    </div>
+  `;
+}
+}
 
 dashboardCards.forEach((card) => {
   card.addEventListener("click", async () => {
@@ -2416,6 +2589,13 @@ if (sectionName === "videos") {
   editorTitle.textContent = "Videos";
   openEditor();
   showVideosManager();
+  return;
+}
+
+if (sectionName === "resenas") {
+  editorTitle.textContent = "Reseñas";
+  openEditor();
+  showReviewsManager();
   return;
 }
 
