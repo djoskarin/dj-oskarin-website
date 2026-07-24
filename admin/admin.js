@@ -2612,15 +2612,74 @@ try {
 }
 async function showSettingsManager() {
   editorContent.innerHTML = `
-    <div style="padding:40px;color:white;">
-      <h2>Configuración funcionando ✅</h2>
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Sobre mí</h3>
 
-      <p>Si ves esto, ya podemos construir el panel.</p>
+          <p class="packages-manager-description">
+            Edita la información que aparece públicamente en tu página.
+          </p>
+        </div>
+      </div>
 
-      <button class="editor-action">
-        Guardar
-      </button>
-    </div>
+      <form class="collection-form" id="profileSettingsForm">
+        <div class="event-cover-preview" id="profilePhotoPreview">
+          <span>Sin foto de perfil</span>
+        </div>
+
+        <button
+          class="review-upload-button"
+          id="uploadProfilePhotoButton"
+          type="button"
+        >
+          Subir foto de perfil
+        </button>
+
+        <label class="admin-field">
+          <span>Nombre</span>
+
+          <input
+            id="profileNameInput"
+            type="text"
+            maxlength="80"
+            placeholder="DJ Oskarin"
+          />
+        </label>
+
+        <label class="admin-field">
+          <span>Subtítulo</span>
+
+          <input
+            id="profileSubtitleInput"
+            type="text"
+            maxlength="120"
+            placeholder="Creando momentos inolvidables."
+          />
+        </label>
+
+        <label class="admin-field">
+          <span>Sobre mí</span>
+
+          <textarea
+            id="profileBioInput"
+            rows="8"
+            maxlength="1200"
+            placeholder="Escribe aquí tu biografía..."
+          ></textarea>
+        </label>
+
+        <p
+          class="collection-form-error"
+          id="profileSettingsError"
+        ></p>
+
+        <button class="editor-action" type="submit">
+          Guardar cambios
+        </button>
+      </form>
+    </section>
   `;
 }
 
