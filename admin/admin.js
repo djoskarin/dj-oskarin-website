@@ -2625,9 +2625,33 @@ async function showSettingsManager() {
       </div>
 
       <form class="collection-form" id="profileSettingsForm">
-        <div class="event-cover-preview" id="profilePhotoPreview">
-          <span>Sin foto de perfil</span>
-        </div>
+        <div
+  id="profilePhotoPreview"
+  style="
+    width: 220px;
+    height: 220px;
+    margin: 10px auto 28px;
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: #0b0b0b;
+  "
+>
+  <span
+    style="
+      padding: 24px;
+      color: rgba(255,255,255,.45);
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-align: center;
+      text-transform: uppercase;
+    "
+  >
+    Sin foto de perfil
+  </span>
+</div>
 
         <button
           class="review-upload-button"
