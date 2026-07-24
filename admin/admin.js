@@ -2734,6 +2734,23 @@ async function showSettingsManager() {
       </form>
     </section>
   `;
+
+  const nameInput = document.getElementById("profileNameInput");
+const subtitleInput = document.getElementById("profileSubtitleInput");
+
+const namePreview = document.getElementById("profileNamePreview");
+const subtitlePreview = document.getElementById("profileSubtitlePreview");
+
+nameInput?.addEventListener("input", () => {
+  namePreview.textContent =
+    nameInput.value.trim() || "DJ Oskarin";
+});
+
+subtitleInput?.addEventListener("input", () => {
+  subtitlePreview.textContent =
+    subtitleInput.value.trim() ||
+    "Creando momentos inolvidables.";
+});
 }
 
 dashboardCards.forEach((card) => {
