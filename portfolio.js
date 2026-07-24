@@ -332,26 +332,25 @@ function showCollection(collection, searchTerm = "") {
   tabindex="0"
   role="button"
 >
-            <div>
-              <p class="portfolio-eyebrow">
-                Evento ${String(index + 1).padStart(2, "0")}
-              </p>
+            <div class="portfolio-card-content">
+  <h3>${escapeHtml(event.title)}</h3>
 
-              <h3>${escapeHtml(event.title)}</h3>
+  <p class="portfolio-card-date">
+    ${escapeHtml(formatDate(event.event_date))}
+  </p>
 
-              <p class="portfolio-card-copy">
-                ${escapeHtml(
-                  [event.venue, event.city]
-                    .filter(Boolean)
-                    .join(" · ") || "Detalles por confirmar"
-                )}
-              </p>
-            </div>
+  <p class="portfolio-card-copy">
+    ${escapeHtml(
+      event.city ||
+      event.venue ||
+      "Detalles por confirmar"
+    )}
+  </p>
+</div>
 
-            <div class="portfolio-card-footer">
-              <span>${escapeHtml(formatDate(event.event_date))}</span>
-              <strong>↗</strong>
-            </div>
+<div class="portfolio-card-footer">
+  <strong>↗</strong>
+</div>
           </article>
         `
       )
