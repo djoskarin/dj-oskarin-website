@@ -6,10 +6,12 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
@@ -2472,6 +2474,28 @@ async function showReviewsManager() {
       showToast("Foto del cliente agregada.");
     });
   });
+  async function showSettingsManager() {
+  editorContent.innerHTML = `
+    <section class="packages-manager">
+      <div class="packages-manager-header">
+        <div>
+          <p class="eyebrow">Administración</p>
+          <h3>Configuración</h3>
+
+          <p class="packages-manager-description">
+            Administra la información pública de tu perfil.
+          </p>
+        </div>
+      </div>
+
+      <div id="settingsManagerContent">
+        <div class="editor-empty">
+          <p>Cargando configuración...</p>
+        </div>
+      </div>
+    </section>
+  `;
+}
   
   saveReviewButton?.addEventListener("click", async () => {
     const textInput =
@@ -2644,6 +2668,13 @@ if (sectionName === "resenas") {
   editorTitle.textContent = "Reseñas";
   openEditor();
   showReviewsManager();
+  return;
+}
+
+if (sectionName === "configuracion") {
+  editorTitle.textContent = "Configuración";
+  openEditor();
+  showSettingsManager();
   return;
 }
 
