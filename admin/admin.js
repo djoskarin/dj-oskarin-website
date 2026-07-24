@@ -2751,6 +2751,36 @@ subtitleInput?.addEventListener("input", () => {
     subtitleInput.value.trim() ||
     "Creando momentos inolvidables.";
 });
+
+let uploadedProfilePhoto = "";
+
+document
+  .getElementById("uploadProfilePhotoButton")
+  ?.addEventListener("click", () => {
+    openCloudinaryUpload((uploadedImage) => {
+      uploadedProfilePhoto = uploadedImage.secure_url;
+
+      const preview =
+        document.getElementById("profilePhotoPreview");
+
+      if (preview) {
+        preview.innerHTML = `
+          <img
+            src="${escapeHtml(uploadedProfilePhoto)}"
+            alt="Foto de perfil"
+            style="
+              width:100%;
+              height:100%;
+              object-fit:cover;
+              display:block;
+            "
+          />
+        `;
+      }
+
+      showToast("✓ Foto de perfil agregada");
+    });
+  });
 }
 
 dashboardCards.forEach((card) => {
