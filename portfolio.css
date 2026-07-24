@@ -603,7 +603,7 @@ body.portfolio-page input {
   color: rgba(255, 255, 255, 0.8);
 }
 @media (max-width: 700px) {
-  .public-event-gallery {
+  .public-event-gallery-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
