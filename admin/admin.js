@@ -1041,6 +1041,19 @@ function showEventForm(collectionItem, eventToEdit = null) {
   <div id="eventVideosList"></div>
 </div>
 
+<label class="admin-field">
+  <span>Evento destacado</span>
+
+  <label class="admin-toggle">
+    <input
+      id="eventFeatured"
+      type="checkbox"
+      ${editing && eventToEdit.featured ? "checked" : ""}
+    >
+    <span>Mostrar como destacado</span>
+  </label>
+</label>
+
         <p>
           Los botones de fotos y videos se conectarán en el siguiente paso.
         </p>
@@ -1053,6 +1066,10 @@ function showEventForm(collectionItem, eventToEdit = null) {
 </button>
     </form>
   `;
+  if (editing) {
+  document.getElementById("eventFeatured").checked =
+    Boolean(eventToEdit.featured);
+}
 
   document
     .getElementById("backToCollectionEvents")
@@ -1424,6 +1441,7 @@ document
     city: city || null,
     story: story || null,
     cover_image: selectedCoverImage,
+    featured: document.getElementById("eventFeatured")?.checked || false,
     gallery: selectedGalleryImages,
     videos: selectedEventVideos,
   };

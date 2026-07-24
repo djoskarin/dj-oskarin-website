@@ -1060,3 +1060,22 @@ a {
     color:#9d9d9d;
     font-size:.85rem;
 }
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  color: var(--admin-text);
+  font-size: 0.95rem;
+}
+
+.admin-toggle input {
+  width: 18px;
+  height: 18px;
+  accent-color: #ffffff;
+  cursor: pointer;
+}
+
+.admin-toggle span {
+  color: var(--admin-muted);
+}

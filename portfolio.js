@@ -272,6 +272,10 @@ function renderCollections() {
     });
 }
 
+function renderEventCards(events) {
+
+}
+
 function showCollection(collection, searchTerm = "") {
   activeCollection = collection;
 
@@ -318,6 +322,14 @@ function showCollection(collection, searchTerm = "") {
       </div>
     `;
   } else {
+
+    const featuredEvents = events.filter((event) => event.featured);
+const regularEvents = events.filter((event) => !event.featured);
+const hasFeatured = featuredEvents.length > 0;
+const sectionTitle = hasFeatured
+  ? "✦ Destacados de Oskarin"
+  : "Todos los eventos";
+
     publicEvents.innerHTML = events
       .map(
         (event, index) => `
@@ -373,7 +385,7 @@ function showCollection(collection, searchTerm = "") {
 setTimeout(() => {
   showEvent(event);
   card.classList.remove("is-opening");
-}, 180);
+}, 150);
         };
 
         card.addEventListener("click", openEvent);

@@ -364,11 +364,11 @@ body.portfolio-page input {
 }
 
 .public-event-story {
-  max-width: 760px;
+  max-width: 920px;
   color: var(--portfolio-muted);
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(1.6rem, 3vw, 2.5rem);
-  line-height: 1.5;
+  line-height: 1.38;
 }
 
 .portfolio-footer {
