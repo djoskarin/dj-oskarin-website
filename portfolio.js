@@ -459,6 +459,11 @@ function showEvent(event) {
         }
       </div>
 
+      <div class="scroll-hint">
+    Continúa
+    <span>↓</span>
+</div>
+
       ${
         event.story
           ? `
