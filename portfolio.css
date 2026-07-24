@@ -233,9 +233,9 @@ body.portfolio-page input {
 
 .portfolio-card-copy {
   max-width: 430px;
-  margin-top: 20px;
+  margin-top: 12px;
   color: var(--portfolio-muted);
-  line-height: 1.7;
+  line-height: 1.45;
 }
 
 .portfolio-card-footer {
@@ -243,7 +243,7 @@ body.portfolio-page input {
   align-items: end;
   justify-content: space-between;
   gap: 20px;
-  margin-top: 60px;
+  margin-top: 42px;
 }
 
 .portfolio-card-footer span {
@@ -255,8 +255,10 @@ body.portfolio-page input {
 
 .portfolio-card-footer strong {
   font-family: Georgia, "Times New Roman", serif;
-  font-size: 2.2rem;
-  font-weight: 400;
+  font-size: 3rem;
+  font-weight: 300;
+  line-height: 1;
+  color: rgba(255,255,255,.92);
 }
 
 .portfolio-empty-state {
