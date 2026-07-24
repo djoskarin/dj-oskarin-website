@@ -2476,24 +2476,15 @@ async function showReviewsManager() {
   });
   async function showSettingsManager() {
   editorContent.innerHTML = `
-    <section class="packages-manager">
-      <div class="packages-manager-header">
-        <div>
-          <p class="eyebrow">Administración</p>
-          <h3>Configuración</h3>
+    <div style="padding:40px;color:white;">
+      <h2>Configuración funcionando ✅</h2>
 
-          <p class="packages-manager-description">
-            Administra la información pública de tu perfil.
-          </p>
-        </div>
-      </div>
+      <p>Si ves esto, ya podemos construir el panel.</p>
 
-      <div id="settingsManagerContent">
-        <div class="editor-empty">
-          <p>Cargando configuración...</p>
-        </div>
-      </div>
-    </section>
+      <button class="editor-action">
+        Guardar
+      </button>
+    </div>
   `;
 }
   
