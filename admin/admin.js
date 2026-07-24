@@ -2801,6 +2801,49 @@ document
       showToast("✓ Foto de perfil agregada");
     });
   });
+  const profileDocument = await getDoc(
+  doc(db, "siteSettings", "profile")
+);
+
+if (profileDocument.exists()) {
+  const profile = profileDocument.data();
+
+  nameInput.value = profile.name || "";
+  subtitleInput.value = profile.subtitle || "";
+  bioInput.value = profile.bio || "";
+
+  namePreview.textContent =
+    profile.name || "DJ Oskarin";
+
+  subtitlePreview.textContent =
+    profile.subtitle ||
+    "Creando momentos inolvidables.";
+
+  bioPreview.textContent =
+    profile.bio ||
+    "Escribe aquí tu biografía...";
+
+  uploadedProfilePhoto =
+    profile.profilePhoto || "";
+
+  if (uploadedProfilePhoto) {
+    const photoPreview =
+      document.getElementById("profilePhotoPreview");
+
+    photoPreview.innerHTML = `
+      <img
+        src="${escapeHtml(uploadedProfilePhoto)}"
+        alt="Foto de perfil"
+        style="
+          width:100%;
+          height:100%;
+          object-fit:cover;
+          display:block;
+        "
+      />
+    `;
+  }
+}
 }
 
 dashboardCards.forEach((card) => {
