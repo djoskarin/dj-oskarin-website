@@ -1,3 +1,10 @@
+import { db } from "./firebase.js";
+
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-firestore.js";
+
 "use strict";
 
 /* =========================================================
@@ -444,3 +451,43 @@ window.addEventListener("scroll", updateHeaderOnScroll, {
 });
 
 updateHeaderOnScroll();
+
+async function loadPublicProfile() {
+  try {
+    const profileDocument = await getDoc(
+      doc(db, "siteSettings", "profile")
+    );
+
+    if (!profileDocument.exists()) return;
+
+    const profile = profileDocument.data();
+
+    const subtitle =
+      document.getElementById("publicProfileSubtitle");
+
+    const photo =
+      document.getElementById("publicProfilePhoto");
+
+    const bio =
+      document.getElementById("publicProfileBio");
+
+    if (subtitle && profile.subtitle) {
+      subtitle.textContent = profile.subtitle;
+    }
+
+    if (photo && profile.profilePhoto) {
+      photo.src = profile.profilePhoto;
+    }
+
+    if (bio && profile.bio) {
+      bio.textContent = profile.bio;
+    }
+  } catch (error) {
+    console.error(
+      "Could not load public profile:",
+      error
+    );
+  }
+}
+
+loadPublicProfile();
