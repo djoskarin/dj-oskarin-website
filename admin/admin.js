@@ -2844,6 +2844,75 @@ if (profileDocument.exists()) {
     `;
   }
 }
+document
+  .getElementById("profileSettingsForm")
+  ?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const submitButton = form.querySelector(
+      'button[type="submit"]'
+    );
+    const errorElement = document.getElementById(
+      "profileSettingsError"
+    );
+
+    const name = nameInput?.value.trim() || "";
+    const subtitle =
+      subtitleInput?.value.trim() || "";
+    const bio = bioInput?.value.trim() || "";
+
+    if (!name || !bio) {
+      errorElement.textContent =
+        "Escribe tu nombre y biografía.";
+      return;
+    }
+
+    errorElement.textContent = "";
+
+    if (submitButton) {
+      submitButton.disabled = true;
+      submitButton.textContent = "Guardando...";
+    }
+
+    try {
+      await setDoc(
+        doc(db, "siteSettings", "profile"),
+        {
+          name,
+          subtitle,
+          bio,
+          profilePhoto: uploadedProfilePhoto || "",
+          updated_at: serverTimestamp(),
+        },
+        {
+          merge: true,
+        }
+      );
+
+      showToast("✓ Perfil guardado");
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent =
+          "Guardar cambios";
+      }
+    } catch (error) {
+      console.error(
+        "Could not save profile settings:",
+        error
+      );
+
+      errorElement.textContent =
+        "No se pudo guardar el perfil.";
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent =
+          "Guardar cambios";
+      }
+    }
+  });
 }
 
 dashboardCards.forEach((card) => {
