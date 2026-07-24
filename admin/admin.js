@@ -2680,6 +2680,19 @@ async function showSettingsManager() {
   >
     Creando momentos inolvidables.
   </p>
+
+  <p
+  id="profileBioPreview"
+  style="
+    max-width:700px;
+    margin:18px auto 0;
+    color:rgba(255,255,255,.75);
+    line-height:1.8;
+    font-size:15px;
+  "
+>
+  Escribe aquí tu biografía...
+</p>
 </div>
 
         <button
@@ -2740,6 +2753,8 @@ const subtitleInput = document.getElementById("profileSubtitleInput");
 
 const namePreview = document.getElementById("profileNamePreview");
 const subtitlePreview = document.getElementById("profileSubtitlePreview");
+const bioInput = document.getElementById("profileBioInput");
+const bioPreview = document.getElementById("profileBioPreview");
 
 nameInput?.addEventListener("input", () => {
   namePreview.textContent =
@@ -2750,6 +2765,11 @@ subtitleInput?.addEventListener("input", () => {
   subtitlePreview.textContent =
     subtitleInput.value.trim() ||
     "Creando momentos inolvidables.";
+});
+bioInput?.addEventListener("input", () => {
+  bioPreview.textContent =
+    bioInput.value.trim() ||
+    "Escribe aquí tu biografía...";
 });
 
 let uploadedProfilePhoto = "";
