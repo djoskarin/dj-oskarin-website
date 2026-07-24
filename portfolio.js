@@ -350,7 +350,7 @@ function showCollection(collection, searchTerm = "") {
 
 <div class="portfolio-card-footer">
   <span class="portfolio-card-arrow">
-  →
+  ➜
 </span>
 </div>
           </article>
