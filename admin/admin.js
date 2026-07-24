@@ -2653,6 +2653,35 @@ async function showSettingsManager() {
   </span>
 </div>
 
+<div
+  style="
+    margin: 0 auto 30px;
+    text-align: center;
+  "
+>
+  <h4
+    id="profileNamePreview"
+    style="
+      margin: 0 0 8px;
+      font-size: 34px;
+      font-weight: 500;
+    "
+  >
+    DJ Oskarin
+  </h4>
+
+  <p
+    id="profileSubtitlePreview"
+    style="
+      margin: 0;
+      color: rgba(255,255,255,.6);
+      font-size: 17px;
+    "
+  >
+    Creando momentos inolvidables.
+  </p>
+</div>
+
         <button
           class="review-upload-button"
           id="uploadProfilePhotoButton"
