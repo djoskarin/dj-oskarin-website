@@ -264,6 +264,14 @@ body.portfolio-page input {
   text-transform: none;
 }
 
+.portfolio-event-card .portfolio-card-arrow {
+  transition: transform 180ms ease;
+}
+
+.portfolio-event-card.is-opening .portfolio-card-arrow {
+  transform: translateX(10px);
+}
+
 .portfolio-card-footer strong {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 3rem;

@@ -368,7 +368,12 @@ function showCollection(collection, searchTerm = "") {
 
           if (!event) return;
 
-          showEvent(event);
+          card.classList.add("is-opening");
+
+setTimeout(() => {
+  showEvent(event);
+  card.classList.remove("is-opening");
+}, 180);
         };
 
         card.addEventListener("click", openEvent);
