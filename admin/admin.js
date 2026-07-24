@@ -2474,19 +2474,7 @@ async function showReviewsManager() {
       showToast("Foto del cliente agregada.");
     });
   });
-  async function showSettingsManager() {
-  editorContent.innerHTML = `
-    <div style="padding:40px;color:white;">
-      <h2>Configuración funcionando ✅</h2>
-
-      <p>Si ves esto, ya podemos construir el panel.</p>
-
-      <button class="editor-action">
-        Guardar
-      </button>
-    </div>
-  `;
-}
+  
   
   saveReviewButton?.addEventListener("click", async () => {
     const textInput =
@@ -2621,6 +2609,19 @@ try {
     </div>
   `;
 }
+}
+async function showSettingsManager() {
+  editorContent.innerHTML = `
+    <div style="padding:40px;color:white;">
+      <h2>Configuración funcionando ✅</h2>
+
+      <p>Si ves esto, ya podemos construir el panel.</p>
+
+      <button class="editor-action">
+        Guardar
+      </button>
+    </div>
+  `;
 }
 
 dashboardCards.forEach((card) => {
