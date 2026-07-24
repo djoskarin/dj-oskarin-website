@@ -253,6 +253,17 @@ body.portfolio-page input {
   text-transform: uppercase;
 }
 
+.portfolio-card-arrow {
+  margin-left: auto;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 3.8rem;
+  font-weight: 300;
+  line-height: 0.8;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
 .portfolio-card-footer strong {
   font-family: Georgia, "Times New Roman", serif;
   font-size: 3rem;
